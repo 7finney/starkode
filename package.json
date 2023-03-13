@@ -1,0 +1,64 @@
+{
+  "name": "helloworld-sample",
+  "displayName": "helloworld-sample",
+  "description": "HelloWorld example for VS Code",
+  "version": "0.0.1",
+  "publisher": "vscode-samples",
+  "repository": "https://github.com/Microsoft/vscode-extension-samples/helloworld-sample",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "starknet.helloWorld",
+        "title": "Hello World",
+        "category": "Starknet"
+      },
+      {
+        "command": "starknet.selectnetwork",
+        "title": "Select Network",
+        "category": "Starknet"
+      },
+      {
+        "command": "starknet.createaccount",
+        "title": "Create new account",
+        "category": "Starknet"
+      },
+      {
+        "command": "starknet.unDeployedAccount",
+        "title": "Select undeployed account",
+        "category": "Starknet"
+      },
+      {
+        "command": "starknet.deployaccount",
+        "title": "Deploy account",
+        "category": "Starknet"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "lint": "eslint \"src/**/*.ts\"",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "^16.11.7",
+    "@types/vscode": "^1.73.0",
+    "@typescript-eslint/eslint-plugin": "^5.42.0",
+    "@typescript-eslint/parser": "^5.42.0",
+    "eslint": "^8.26.0",
+    "typescript": "^4.9.4"
+  },
+  "dependencies": {
+    "@types/bn.js": "^5.1.1",
+    "@types/elliptic": "^6.4.14",
+    "starknet": "^4.22.0"
+  }
+}
