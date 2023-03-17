@@ -11,12 +11,14 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onCommand: starknet.activate"
+  ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "starknet.helloWorld",
+        "command": "starknet.activate",
         "title": "Hello World",
         "category": "Starknet"
       },
@@ -39,11 +41,26 @@
         "command": "starknet.deployaccount",
         "title": "Deploy account",
         "category": "Starknet"
+      },
+      {
+        "command": "starknet.selectaccount",
+        "title": "Select account",
+        "category": "Starknet"
+      },
+      {
+        "command": "starknet.selectContract",
+        "title": "Select contract",
+        "category": "Starknet"
+      },
+      {
+        "command": "starknet.declareContract",
+        "title": "Declare contract",
+        "category": "Starknet"
       }
     ]
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile",
+    "build": "npm run compile",
     "compile": "tsc -p ./",
     "lint": "eslint \"src/**/*.ts\"",
     "watch": "tsc -watch -p ./"

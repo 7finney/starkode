@@ -17,4 +17,6 @@ export interface IAccountQP extends QuickPickItem {
   label: string;
 }
 
-
+export interface IContractQP extends QuickPickItem {
+  label: string;
+}

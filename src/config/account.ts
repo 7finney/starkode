@@ -161,3 +161,57 @@ export const deployAccount = async (context: vscode.ExtensionContext) => {
   );
   logger.log(`Account deployed successfully at address: ${contract_address}`);
 };
+
+const getDeployedAccounts = (context: vscode.ExtensionContext) => {
+  if (!fs.existsSync(`${context.extensionPath}/accounts.json`)) {
+    logger.log("No account exist.");
+    return;
+  }
+  const fileData = fs.readFileSync(`${context.extensionPath}/accounts.json`, {
+    encoding: "utf-8",
+  });
+  const parsedFileData: Array<JSONAccountType> = JSON.parse(fileData);
+  const accounts: Array<JSONAccountType> = parsedFileData.filter(
+    (e) => e.isDeployed === true
+  );
+  return accounts;
+};
+
+export const selectDeployedAccount = async (
+  context: vscode.ExtensionContext
+) => {
+  const accounts: Array<JSONAccountType> | undefined =
+    await getDeployedAccounts(context);
+  if (accounts === undefined) return;
+  const quickPick = vscode.window.createQuickPick<IAccountQP>();
+
+  quickPick.items = accounts.map((account: JSONAccountType) => ({
+    label: account.accountAddress,
+  }));
+  quickPick.onDidChangeActive(() => {
+    quickPick.placeholder = "Select account";
+  });
+  quickPick.onDidChangeSelection((selection: any) => {
+    if (selection[0] != null) {
+      const { label } = selection[0];
+      void context.workspaceState.update("account", label);
+      logger.log(`${label} selected`);
+      quickPick.dispose();
+    }
+  });
+  quickPick.onDidHide(() => {
+    quickPick.dispose();
+  });
+  quickPick.show();
+};
+
+export const getAccountInfo = (
+  context: vscode.ExtensionContext,
+  accountAddress: string
+) => {
+  const accounts = getDeployedAccounts(context) as JSONAccountType[];
+  const selectedAccountInfo = accounts.filter(
+    (account) => account.accountAddress === accountAddress
+  );
+  return selectedAccountInfo[0];
+};

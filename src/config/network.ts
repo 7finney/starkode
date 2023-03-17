@@ -31,13 +31,13 @@ export const updateSelectedNetwork = async (
   quickPick.show();
 };
 
-
 export const getNetworkProvider = (
   context: vscode.ExtensionContext
 ): Provider | undefined => {
   const selectedNetwork: any = context.workspaceState.get("selectedNetwork");
   if (selectedNetwork === undefined) {
     logger.log("No network selected.");
+    return;
   }
   const provider = new Provider({
     sequencer: { network: selectedNetwork },
