@@ -7,7 +7,12 @@ import {
   selectDeployedAccount,
   selectNotDeployedAccount,
 } from "./config/account";
-import { declareContract, selectCompiledContract } from "./config/contract";
+import {
+  declareContract,
+  deployContract,
+  executeContractFunction,
+  selectCompiledContract,
+} from "./config/contract";
 import { updateSelectedNetwork } from "./config/network";
 import { logger } from "./lib";
 
@@ -44,6 +49,12 @@ export function activate(context: vscode.ExtensionContext) {
     }),
     vscode.commands.registerCommand("starknet.declareContract", async () => {
       await declareContract(context);
+    }),
+    vscode.commands.registerCommand("starknet.deployContract", async () => {
+      await deployContract(context);
+    }),
+    vscode.commands.registerCommand("starknet.callFunction", async () => {
+      await executeContractFunction(context);
     })
   );
 }

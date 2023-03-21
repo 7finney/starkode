@@ -1,15 +1,15 @@
 {
-  "name": "helloworld-sample",
-  "displayName": "helloworld-sample",
-  "description": "HelloWorld example for VS Code",
+  "name": "Starkex",
+  "displayName": "Starkex",
+  "description": "Extension for execution of contracts written in cairo.",
   "version": "0.0.1",
-  "publisher": "vscode-samples",
-  "repository": "https://github.com/Microsoft/vscode-extension-samples/helloworld-sample",
+  "publisher": "Aniket6990",
+  "repository": "https://github.com/Aniket6990/stark-extension.git",
   "engines": {
     "vscode": "^1.74.0"
   },
   "categories": [
-    "Other"
+    "Programming Languages"
   ],
   "activationEvents": [
     "onCommand: starknet.activate"
@@ -19,42 +19,52 @@
     "commands": [
       {
         "command": "starknet.activate",
-        "title": "Hello World",
+        "title": "activate Starkex extension",
         "category": "Starknet"
       },
       {
         "command": "starknet.selectnetwork",
-        "title": "Select Network",
+        "title": "Select starknet network",
         "category": "Starknet"
       },
       {
         "command": "starknet.createaccount",
-        "title": "Create new account",
+        "title": "Create starkex new account",
         "category": "Starknet"
       },
       {
         "command": "starknet.unDeployedAccount",
-        "title": "Select undeployed account",
+        "title": "Select starkex undeployed account",
         "category": "Starknet"
       },
       {
         "command": "starknet.deployaccount",
-        "title": "Deploy account",
+        "title": "Deploy starkex new account",
         "category": "Starknet"
       },
       {
         "command": "starknet.selectaccount",
-        "title": "Select account",
+        "title": "Select starkex account",
         "category": "Starknet"
       },
       {
         "command": "starknet.selectContract",
-        "title": "Select contract",
+        "title": "Select cairo contract",
         "category": "Starknet"
       },
       {
         "command": "starknet.declareContract",
-        "title": "Declare contract",
+        "title": "Declare cairo contract",
+        "category": "Starknet"
+      },
+      {
+        "command": "starknet.deployContract",
+        "title": "Deploy cairo contract",
+        "category": "Starknet"
+      },
+      {
+        "command": "starknet.callFunction",
+        "title": "Call contact method",
         "category": "Starknet"
       }
     ]
