@@ -12,12 +12,13 @@ A Vscode plugin for **[Starknet](https://www.starknet.io/en) Developers Communit
 # Starkex usage instruction
 
 ## Account Creation
-![](https://i.imgur.com/Ru2WySz.gif)
+![account-creation](https://user-images.githubusercontent.com/13261372/229073284-b790c667-6f3e-4899-96f6-d53f36d9cf06.gif)
+
 
 
 
 ## Contract Deployment & Interaction
-![](https://i.imgur.com/9Zd6XWF.gif)
+![contract-deploy-and-interaction](https://user-images.githubusercontent.com/9979182/229073433-3f6b4c7c-48dd-414b-bbe5-c52f03764a0d.gif)
 
 
 
