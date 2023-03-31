@@ -4,7 +4,7 @@ A Vscode plugin for **[Starknet](https://www.starknet.io/en) Developers Communit
 
 ## Installation
 
-Download the vsix file and install on vscode.
+Download the vsix file from our [internal release](https://github.com/7finney/starkex/releases/tag/v0.0.1) and install on vscode.
 
 ## Features
 
