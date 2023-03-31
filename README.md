@@ -2,6 +2,12 @@
 
 A Vscode plugin for **[Starknet](https://www.starknet.io/en) Developers Community** in which smart contract developers can perform the following features:
 
+## Installation
+
+Download the vsix file and install on vscode.
+
+## Features
+
 - Create account
 - Deploy account
 - Compile cairo smart contracts
