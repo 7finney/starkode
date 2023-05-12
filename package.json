@@ -1,10 +1,10 @@
 {
-  "name": "Starkex",
-  "displayName": "Starkex",
+  "name": "starkode",
+  "displayName": "Starkode",
   "description": "Extension for execution of contracts written in cairo.",
   "version": "0.0.1",
-  "publisher": "Aniket6990",
-  "repository": "https://github.com/Aniket6990/stark-extension.git",
+  "publisher": "7finney",
+  "repository": "https://github.com/7finney/starkode.git",
   "engines": {
     "vscode": "^1.74.0"
   },
@@ -19,7 +19,7 @@
     "commands": [
       {
         "command": "starknet.activate",
-        "title": "activate Starkex extension",
+        "title": "activate starkode extension",
         "category": "Starknet"
       },
       {
@@ -29,22 +29,22 @@
       },
       {
         "command": "starknet.createaccount",
-        "title": "Create starkex new account",
+        "title": "Create starkode new account",
         "category": "Starknet"
       },
       {
         "command": "starknet.unDeployedAccount",
-        "title": "Select starkex undeployed account",
+        "title": "Select starkode undeployed account",
         "category": "Starknet"
       },
       {
         "command": "starknet.deployaccount",
-        "title": "Deploy starkex new account",
+        "title": "Deploy starkode new account",
         "category": "Starknet"
       },
       {
         "command": "starknet.selectaccount",
-        "title": "Select starkex account",
+        "title": "Select starkode account",
         "category": "Starknet"
       },
       {

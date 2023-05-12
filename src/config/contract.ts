@@ -66,7 +66,7 @@ export const selectCompiledContract = (context: vscode.ExtensionContext) => {
 const getContractInfo = (path_: string, fileName: string) => {
   const file = fileName.substring(0, fileName.length - 5);
   const fileData = fs.readFileSync(
-    path.join(path_, "starkex", file, `${file}_address.json`),
+    path.join(path_, "starkode", file, `${file}_address.json`),
     { encoding: "utf-8" }
   );
   const parsedFileData = JSON.parse(fileData);
@@ -76,7 +76,7 @@ const getContractInfo = (path_: string, fileName: string) => {
 const getContractABI = (path_: string, fileName: string) => {
   const file = fileName.substring(0, fileName.length - 5);
   const fileData = fs.readFileSync(
-    path.join(path_, "starkex", file, `${file}_abi.json`),
+    path.join(path_, "starkode", file, `${file}_abi.json`),
     { encoding: "utf-8" }
   );
   const parsedFileData = JSON.parse(fileData);

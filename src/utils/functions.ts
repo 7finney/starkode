@@ -28,17 +28,17 @@ export const createABIFile = (file: string) => {
       };
     });
 
-    if (!fs.existsSync(path.join(path_, "starkex", fileName))) {
-      fs.mkdirSync(path.join(path_, "starkex", fileName));
+    if (!fs.existsSync(path.join(path_, "starkode", fileName))) {
+      fs.mkdirSync(path.join(path_, "starkode", fileName));
     }
 
     if (
       !fs.existsSync(
-        path.join(path_, "starkex", fileName, `${fileName}_abi.json`)
+        path.join(path_, "starkode", fileName, `${fileName}_abi.json`)
       )
     ) {
       fs.writeFileSync(
-        path.join(path_, "starkex", fileName, `${fileName}_abi.json`),
+        path.join(path_, "starkode", fileName, `${fileName}_abi.json`),
         JSON.stringify(functionsValue)
       );
     } else {
@@ -60,17 +60,17 @@ export const createAddressFile = (file: string) => {
     const path_ = vscode.workspace.workspaceFolders[0].uri.fsPath;
     const fileName = file.substring(0, file.length - 5);
 
-    if (!fs.existsSync(path.join(path_, "starkex", fileName))) {
-      fs.mkdirSync(path.join(path_, "starkex", fileName));
+    if (!fs.existsSync(path.join(path_, "starkode", fileName))) {
+      fs.mkdirSync(path.join(path_, "starkode", fileName));
     }
 
     if (
       !fs.existsSync(
-        path.join(path_, "starkex", fileName, `${fileName}_address.json`)
+        path.join(path_, "starkode", fileName, `${fileName}_address.json`)
       )
     ) {
       fs.writeFileSync(
-        path.join(path_, "starkex", fileName, `${fileName}_address.json`),
+        path.join(path_, "starkode", fileName, `${fileName}_address.json`),
         JSON.stringify({
           name: fileName,
           address: "",

@@ -24,10 +24,10 @@ export function activate(context: vscode.ExtensionContext) {
   const path_ = vscode.workspace.workspaceFolders[0].uri.fsPath;
   context.subscriptions.push(
     vscode.commands.registerCommand("starknet.activate", () => {
-      if (!fs.existsSync(path.join(path_, "starkex"))) {
-        fs.mkdirSync(path.join(path_, "starkex"));
+      if (!fs.existsSync(path.join(path_, "starkode"))) {
+        fs.mkdirSync(path.join(path_, "starkode"));
       }
-      vscode.window.showInformationMessage("StarkEx activated.");
+      vscode.window.showInformationMessage("Starkode activated.");
     }),
     vscode.commands.registerCommand("starknet.selectnetwork", async () => {
       await updateSelectedNetwork(context);
