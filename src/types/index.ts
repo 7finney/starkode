@@ -40,4 +40,5 @@ export interface ABIFragment {
   stateMutability: string;
   type: string;
   outputs: Array<outputType>;
+  state_mutability?: string;
 }

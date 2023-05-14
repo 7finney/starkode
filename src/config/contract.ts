@@ -28,8 +28,11 @@ const exportPathOfJSONfiles = (path_: string, file: string) => {
     const fileData = fs.readFileSync(filePath, {
       encoding: "utf-8",
     });
-    console.log("file readed");
     if (JSON.parse(fileData).program) return filePath;
+    if (JSON.parse(fileData).contract_class_version) {
+      console.log("found cairo1 program");
+      return filePath;
+    }
   }
 };
 
@@ -186,55 +189,64 @@ export const deployContract = async (context: vscode.ExtensionContext) => {
 export const executeContractFunction = async (
   context: vscode.ExtensionContext
 ) => {
-  if (vscode.workspace.workspaceFolders === undefined) {
-    logger.error("Error: Please open your solidity project to vscode");
-    return;
-  }
-  const path_ = vscode.workspace.workspaceFolders[0].uri.fsPath;
-  const provider = getNetworkProvider(context) as Provider;
-  const selectedContract: string = context.workspaceState.get(
-    "selectedContract"
-  ) as string;
-  const selectedAccount = context.workspaceState.get("account") as string;
-  if (selectedAccount === undefined) {
-    logger.log("No account selected.");
-    return;
-  }
-  const accountInfo = getAccountInfo(context, selectedAccount);
-  const keyPair = ec.getKeyPair(accountInfo.privateKey);
-  const account = new Account(provider, accountInfo.accountAddress, keyPair);
-  const functionABI = await getSelectedFunction(path_, selectedContract);
-  const contractInfo = getContractInfo(path_, selectedContract);
-
-  const params_: Array<string> = functionABI.inputs.map((e) => {
-    return e.value;
-  });
-
-  const params = params_ !== undefined ? params_ : [];
-
-  if (functionABI.stateMutability === "view") {
-    const { abi: testAbi } = await provider.getClassAt(contractInfo.address);
-    if (testAbi === undefined) {
-      throw new Error("no abi.");
+  try {
+    if (vscode.workspace.workspaceFolders === undefined) {
+      logger.error("Error: Please open your solidity project to vscode");
+      return;
     }
-    const contract = new Contract(testAbi, contractInfo.address, provider);
-    const functionCall = await contract.call(`${functionABI.name}`);
-    logger.log(`${functionCall.res.toString()}`);
-  } else {
-    const { abi: testAbi } = await provider.getClassAt(contractInfo.address);
-    if (testAbi === undefined) {
-      throw new Error("no abi.");
+    const path_ = vscode.workspace.workspaceFolders[0].uri.fsPath;
+    const provider = getNetworkProvider(context) as Provider;
+    const selectedContract: string = context.workspaceState.get(
+      "selectedContract"
+    ) as string;
+    const selectedAccount = context.workspaceState.get("account") as string;
+    if (selectedAccount === undefined) {
+      logger.log("No account selected.");
+      return;
     }
-    const contract = new Contract(testAbi, contractInfo.address, provider);
-    contract.connect(account);
-    const res = await contract.invoke(`${functionABI.name}`, params);
-    logger.log(`transaction hash: ${res.transaction_hash}`);
+    const accountInfo = getAccountInfo(context, selectedAccount);
+    const keyPair = ec.getKeyPair(accountInfo.privateKey);
+    const account = new Account(provider, accountInfo.accountAddress, keyPair);
+    const functionABI = await getSelectedFunction(path_, selectedContract);
+    const contractInfo = getContractInfo(path_, selectedContract);
 
-    logger.log("waiting for transaction success...");
+    console.log(`function ABI ${JSON.stringify(functionABI)}`);
 
-    await provider.waitForTransaction(res.transaction_hash);
+    const params_: Array<string> = functionABI.inputs.map((e) => {
+      return e.value;
+    });
 
-    logger.log("transaction successfull");
+    const params = params_ !== undefined ? params_ : [];
+
+    console.log(`params: ${params}`);
+
+    console.log(`stateMutability: ${functionABI.state_mutability}`);
+
+    if (
+      functionABI.stateMutability === "view" ||
+      functionABI.state_mutability === "view"
+    ) {
+      const Abi = getContractABI(path_, selectedContract);
+      const contract = new Contract(Abi, contractInfo.address, provider);
+      logger.log(`calling function: ${functionABI.name}`);
+      const functionCall = await contract.call(`${functionABI.name}`);
+      logger.log(`${functionCall.res.toString()}`);
+    } else {
+      const Abi = getContractABI(path_, selectedContract);
+      const contract = new Contract(Abi, contractInfo.address, provider);
+      contract.connect(account);
+      logger.log(`calling function: ${functionABI.name}`);
+      const res = await contract.invoke(functionABI.name, params);
+      logger.log(`transaction hash: ${res.transaction_hash}`);
+
+      logger.log("waiting for transaction success...");
+
+      await provider.waitForTransaction(res.transaction_hash);
+
+      logger.log("transaction successfull");
+    }
+  } catch (error) {
+    logger.log(error);
   }
 };
 

@@ -21,10 +21,15 @@ export const createABIFile = (file: string) => {
 
     const functionsValue = abiFunctions.map((func) => {
       return {
-        ...func,
+        type: func.type,
+        name: func.name,
         inputs: func.inputs.map((e) => {
           return { ...e, value: "" };
         }),
+        stateMutability: func.stateMutability
+          ? func.stateMutability
+          : func.state_mutability,
+        outputs: func.outputs,
       };
     });
 
