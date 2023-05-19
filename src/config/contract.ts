@@ -210,13 +210,11 @@ export const executeContractFunction = async (
     const functionABI = await getSelectedFunction(path_, selectedContract);
     const contractInfo = getContractInfo(path_, selectedContract);
 
-    console.log(`function ABI ${JSON.stringify(functionABI)}`);
-
-    const params_: Array<string> = functionABI.inputs.map((e) => {
+    const params_: Array<any> = functionABI.inputs.map((e) => {
       return e.value;
     });
 
-    const params = params_ !== undefined ? params_ : [];
+    const params: Array<any> = params_ !== undefined ? params_ : [];
 
     console.log(`params: ${params}`);
 
@@ -226,22 +224,38 @@ export const executeContractFunction = async (
       functionABI.stateMutability === "view" ||
       functionABI.state_mutability === "view"
     ) {
-      const Abi = getContractABI(path_, selectedContract);
+      const Abi = getContractABI(path_, selectedContract).abi;
       const contract = new Contract(Abi, contractInfo.address, provider);
       logger.log(`calling function: ${functionABI.name}`);
-      const functionCall = await contract.call(`${functionABI.name}`);
-      logger.log(`${functionCall.res.toString()}`);
+      let functionCall: any;
+      if (getContractABI(path_, selectedContract).isCairo1 === true) {
+        functionCall = await contract[functionABI.name];
+      } else {
+        functionCall = await contract.call(`${functionABI.name}`);
+      }
+      logger.log(`result: ${functionCall.res.toString()}`);
     } else {
-      const Abi = getContractABI(path_, selectedContract);
+      const Abi = getContractABI(path_, selectedContract).abi;
+
       const contract = new Contract(Abi, contractInfo.address, provider);
       contract.connect(account);
       logger.log(`calling function: ${functionABI.name}`);
-      const res = await contract.invoke(functionABI.name, params);
-      logger.log(`transaction hash: ${res.transaction_hash}`);
+
+      let result: any;
+      if (getContractABI(path_, selectedContract).isCairo1 === true) {
+        logger.log("cairo 1 block executed.");
+        // result = await contract[functionABI.name as string](...params);
+        result = await contract[functionABI.name as string](...params);
+      } else {
+        logger.log("cairo 0.1 block executed.");
+        result = await contract.invoke(functionABI.name, params);
+      }
+
+      logger.log(`transaction hash: ${result.transaction_hash}`);
 
       logger.log("waiting for transaction success...");
 
-      await provider.waitForTransaction(res.transaction_hash);
+      await provider.waitForTransaction(result.transaction_hash);
 
       logger.log("transaction successfull");
     }
@@ -259,9 +273,8 @@ const getSelectedFunction = (
       const contractInfo: Array<ABIFragment> = getContractABI(
         path_,
         selectedContract
-      );
+      ).abi;
 
-      console.log(JSON.stringify(contractInfo));
       if (contractInfo === undefined) return;
       const quickPick = vscode.window.createQuickPick<IFunctionQP>();
 
