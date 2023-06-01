@@ -53,11 +53,6 @@
         "category": "Starknet"
       },
       {
-        "command": "starknet.declareContract",
-        "title": "Declare cairo contract",
-        "category": "Starknet"
-      },
-      {
         "command": "starknet.deployContract",
         "title": "Deploy cairo contract",
         "category": "Starknet"
@@ -86,6 +81,6 @@
   "dependencies": {
     "@types/bn.js": "^5.1.1",
     "@types/elliptic": "^6.4.14",
-    "starknet": "^4.22.0"
+    "starknet": "5.10.0"
   }
 }

@@ -1,23 +1,31 @@
 import * as vscode from "vscode";
 import * as fs from "fs";
-import { Account, ec, json, stark, Provider, hash } from "starknet";
+import {
+  Account,
+  ec,
+  json,
+  stark,
+  Provider,
+  hash,
+  CallData,
+  Signer,
+} from "starknet";
 import { logger } from "../lib";
 import { IAccountQP, JSONAccountType } from "../types";
 import { getNetworkProvider } from "./network";
 
-export const createOZAccount = (context: vscode.ExtensionContext) => {
+export const createOZAccount = async (context: vscode.ExtensionContext) => {
   try {
     const privateKey = stark.randomAddress();
-    const starkKeyPair = ec.getKeyPair(privateKey);
-    const starkKeyPub = ec.getStarkKey(starkKeyPair);
+    const publicKey = await new Signer(privateKey).getPubKey();
 
     const OZaccountClassHash =
-      "0x2794ce20e5f2ff0d40e632cb53845b9f4e526ebd8471983f7dbd355b721d5a";
-    const OZaccountConstructorCallData = stark.compileCalldata({
-      publicKey: starkKeyPub,
+      "0x06f3ec04229f8f9663ee7d5bb9d2e06f213ba8c20eb34c58c25a54ef8fc591cb";
+    const OZaccountConstructorCallData = CallData.compile({
+      publicKey: publicKey,
     });
     const OZcontractAddress = hash.calculateContractAddressFromHash(
-      starkKeyPub,
+      publicKey,
       OZaccountClassHash,
       OZaccountConstructorCallData,
       0
@@ -36,7 +44,7 @@ export const createOZAccount = (context: vscode.ExtensionContext) => {
         {
           accountHash: OZaccountClassHash,
           constructorCallData: OZaccountConstructorCallData,
-          accountPubKey: starkKeyPub,
+          accountPubKey: publicKey,
           accountAddress: OZcontractAddress,
           privateKey: privateKey,
           isDeployed: false,
@@ -51,7 +59,7 @@ export const createOZAccount = (context: vscode.ExtensionContext) => {
         {
           accountHash: OZaccountClassHash,
           constructorCallData: OZaccountConstructorCallData,
-          accountPubKey: starkKeyPub,
+          accountPubKey: publicKey,
           accountAddress: OZcontractAddress,
           privateKey: privateKey,
           isDeployed: false,
@@ -124,14 +132,14 @@ export const deployAccount = async (context: vscode.ExtensionContext) => {
   const selectedAccount: JSONAccountType = isAccountPresent[0];
 
   const selectedNetwork = context.workspaceState.get("selectedNetwork");
-  const accountKeyPair = ec.getKeyPair(selectedAccount.privateKey);
   const provider = getNetworkProvider(context);
   console.log(`Account address: ${selectedAccount.accountAddress}`);
   if (provider === undefined) return;
   const account = new Account(
     provider,
     selectedAccount.accountAddress,
-    accountKeyPair
+    selectedAccount.privateKey,
+    "1"
   );
   logger.log(
     `deploying account ${selectedAccount.accountAddress} on ${selectedNetwork}`

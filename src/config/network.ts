@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { logger } from "../lib";
 import { INetworkQP } from "../types";
-import { Provider } from "starknet";
+import { Provider, SequencerProviderOptions } from "starknet";
 
 const NETWORKS = ["goerli-alpha", "goerli-alpha-2", "mainnet-alpha"];
 
@@ -39,8 +39,9 @@ export const getNetworkProvider = (
     logger.log("No network selected.");
     return;
   }
+
   const provider = new Provider({
-    sequencer: { network: selectedNetwork },
+    sequencer: { baseUrl: "https://alpha4.starknet.io" },
   });
   return provider;
 };

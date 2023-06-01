@@ -5,7 +5,7 @@ import { logger } from "../lib";
 import { ABIFragment, IContractQP, IFunctionQP } from "../types";
 import { createABIFile, createAddressFile } from "../utils/functions";
 import { getAccountInfo } from "./account";
-import { Account, Contract, ec, Provider } from "starknet";
+import { Account, CairoAssembly, Contract, ec, Provider } from "starknet";
 import { getNetworkProvider } from "./network";
 
 const loadAllCompiledContract = () => {
@@ -24,13 +24,11 @@ const loadAllCompiledContract = () => {
 const exportPathOfJSONfiles = (path_: string, file: string) => {
   const filePath = path.join(path_, file);
   if (path.extname(filePath) === ".json") {
-    console.log(filePath);
     const fileData = fs.readFileSync(filePath, {
       encoding: "utf-8",
     });
     if (JSON.parse(fileData).program) return filePath;
     if (JSON.parse(fileData).contract_class_version) {
-      console.log("found cairo1 program");
       return filePath;
     }
   }
@@ -86,50 +84,78 @@ const getContractABI = (path_: string, fileName: string) => {
   return parsedFileData;
 };
 
-export const declareContract = async (context: vscode.ExtensionContext) => {
-  try {
-    if (vscode.workspace.workspaceFolders === undefined) {
-      logger.error("Error: Please open your solidity project to vscode");
-      return;
-    }
-    const path_ = vscode.workspace.workspaceFolders[0].uri.fsPath;
-    const provider = getNetworkProvider(context) as Provider;
-    const selectedContract: string = context.workspaceState.get(
-      "selectedContract"
-    ) as string;
-    const selectedAccount = context.workspaceState.get("account") as string;
-    if (selectedAccount === undefined) {
-      logger.log("No account selected.");
-      return;
-    }
-    const accountInfo = getAccountInfo(context, selectedAccount);
-    const keyPair = ec.getKeyPair(accountInfo.privateKey);
-    logger.log("Declaring contract...");
-    const account = new Account(provider, accountInfo.accountAddress, keyPair);
-    const contractInfo = getContractInfo(path_, selectedContract);
-    if (contractInfo.classHash === "") {
-      logger.log("No classHash available for selected contract.");
-      return;
-    }
-    const compiledContract = fs.readFileSync(
-      path.join(path_, selectedContract),
-      {
-        encoding: "ascii",
-      }
-    );
-    const declareResponse = await account.declare({
-      contract: compiledContract,
-      classHash: contractInfo.classHash,
-    });
+// export const declareContract = async (context: vscode.ExtensionContext) => {
+//   try {
+//     if (vscode.workspace.workspaceFolders === undefined) {
+//       logger.error("Error: Please open your solidity project to vscode");
+//       return;
+//     }
+//     const path_ = vscode.workspace.workspaceFolders[0].uri.fsPath;
+//     const provider = getNetworkProvider(context) as Provider;
+//     const selectedContract: string = context.workspaceState.get(
+//       "selectedContract"
+//     ) as string;
+//     const selectedAccount = context.workspaceState.get("account") as string;
+//     if (selectedAccount === undefined) {
+//       logger.log("No account selected.");
+//       return;
+//     }
+//     const accountInfo = getAccountInfo(context, selectedAccount);
+//     logger.log("Declaring contract...");
+//     const account = new Account(
+//       provider,
+//       accountInfo.accountAddress,
+//       accountInfo.privateKey,
+//       "0"
+//     );
+//     const contractInfo = getContractInfo(path_, selectedContract);
+//     if (contractInfo.classHash === "") {
+//       logger.log("No classHash available for selected contract.");
+//       return;
+//     }
+//     const compiledContract = fs.readFileSync(
+//       path.join(path_, selectedContract),
+//       {
+//         encoding: "ascii",
+//       }
+//     );
+//     const fileName = selectedContract.substring(0, selectedContract.length - 5);
 
-    logger.log(`transaction hash: ${declareResponse.transaction_hash}`);
+//     const casmFileData = fs
+//       .readFileSync(path.join(path_, `${fileName}.casm`))
+//       .toString("ascii");
 
-    await provider.waitForTransaction(declareResponse.transaction_hash);
-    logger.log(`contract classHash: ${declareResponse.class_hash}`);
-  } catch (error) {
-    logger.log(`Error while contract declaration: ${error}`);
-  }
-};
+//     const casmAssembly: CairoAssembly = JSON.parse(casmFileData);
+
+//     const declareResponse = await account.declareAndDeploy({
+//       contract: compiledContract,
+//       casm: casmAssembly,
+//     });
+
+//     logger.log(
+//       `declare transaction hash: ${declareResponse.declare.transaction_hash}`
+//     );
+
+//     await provider.waitForTransaction(
+//       declareResponse.declare.transaction_hash as string
+//     );
+
+//     logger.log("transaction successful");
+//     // logger.log(
+//     //   `deploy transaction hash: ${declareResponse.deploy.transaction_hash}`
+//     // );
+
+//     // await provider.waitForTransaction(
+//     //   declareResponse.deploy.transaction_hash as string
+//     // );
+
+//     // logger.log(
+//     //   `${fileName} is deployed on address: ${declareResponse.deploy.contract_address}`
+//     // );
+//   } catch (error) {
+//     logger.log(`Error while contract declaration: ${error}`);
+//   }
+// };
 
 export const deployContract = async (context: vscode.ExtensionContext) => {
   try {
@@ -143,15 +169,18 @@ export const deployContract = async (context: vscode.ExtensionContext) => {
       "selectedContract"
     ) as string;
     const selectedAccount = context.workspaceState.get("account") as string;
-    console.log(`selectedaAccount first: ${selectedAccount}`);
     if (selectedAccount === undefined) {
       logger.log("No account selected.");
       return;
     }
     const accountInfo = getAccountInfo(context, selectedAccount);
-    const keyPair = ec.getKeyPair(accountInfo.privateKey);
     logger.log("Deploying contract...");
-    const account = new Account(provider, accountInfo.accountAddress, keyPair);
+    const account = new Account(
+      provider,
+      accountInfo.accountAddress,
+      accountInfo.privateKey,
+      "0"
+    );
     const contractInfo = getContractInfo(path_, selectedContract);
     if (contractInfo.classHash === "") {
       logger.log("No classHash available for selected contract.");
@@ -205,8 +234,6 @@ export const executeContractFunction = async (
       return;
     }
     const accountInfo = getAccountInfo(context, selectedAccount);
-    const keyPair = ec.getKeyPair(accountInfo.privateKey);
-    const account = new Account(provider, accountInfo.accountAddress, keyPair);
     const functionABI = await getSelectedFunction(path_, selectedContract);
     const contractInfo = getContractInfo(path_, selectedContract);
 
@@ -216,10 +243,6 @@ export const executeContractFunction = async (
 
     const params: Array<any> = params_ !== undefined ? params_ : [];
 
-    console.log(`params: ${params}`);
-
-    console.log(`stateMutability: ${functionABI.state_mutability}`);
-
     if (
       functionABI.stateMutability === "view" ||
       functionABI.state_mutability === "view"
@@ -227,29 +250,22 @@ export const executeContractFunction = async (
       const Abi = getContractABI(path_, selectedContract).abi;
       const contract = new Contract(Abi, contractInfo.address, provider);
       logger.log(`calling function: ${functionABI.name}`);
-      let functionCall: any;
-      if (getContractABI(path_, selectedContract).isCairo1 === true) {
-        functionCall = await contract[functionABI.name];
-      } else {
-        functionCall = await contract.call(`${functionABI.name}`);
-      }
+      const functionCall: any = await contract.call(`${functionABI.name}`);
       logger.log(`result: ${functionCall.res.toString()}`);
     } else {
       const Abi = getContractABI(path_, selectedContract).abi;
 
-      const contract = new Contract(Abi, contractInfo.address, provider);
-      contract.connect(account);
       logger.log(`calling function: ${functionABI.name}`);
 
-      let result: any;
-      if (getContractABI(path_, selectedContract).isCairo1 === true) {
-        logger.log("cairo 1 block executed.");
-        // result = await contract[functionABI.name as string](...params);
-        result = await contract[functionABI.name as string](...params);
-      } else {
-        logger.log("cairo 0.1 block executed.");
-        result = await contract.invoke(functionABI.name, params);
-      }
+      const account = new Account(
+        provider,
+        accountInfo.accountAddress,
+        accountInfo.privateKey,
+        "0"
+      );
+      const contract = new Contract(Abi, contractInfo.address, provider);
+      contract.connect(account);
+      const result = await contract.invoke(functionABI.name, params);
 
       logger.log(`transaction hash: ${result.transaction_hash}`);
 
