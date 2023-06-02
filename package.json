@@ -53,6 +53,11 @@
         "category": "Starknet"
       },
       {
+        "command": "starknet.declareContract",
+        "title": "Declare cairo contact",
+        "category": "Starknet"
+      },
+      {
         "command": "starknet.deployContract",
         "title": "Deploy cairo contract",
         "category": "Starknet"

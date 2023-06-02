@@ -8,6 +8,7 @@ import {
   selectNotDeployedAccount,
 } from "./config/account";
 import {
+  declareContract,
   deployContract,
   executeContractFunction,
   selectCompiledContract,
@@ -36,6 +37,9 @@ export function activate(context: vscode.ExtensionContext) {
     }),
     vscode.commands.registerCommand("starknet.unDeployedAccount", async () => {
       selectNotDeployedAccount(context);
+    }),
+    vscode.commands.registerCommand("starknet.declareContract", async () => {
+      await declareContract(context);
     }),
     vscode.commands.registerCommand("starknet.deployaccount", async () => {
       await deployAccount(context);

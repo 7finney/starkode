@@ -84,78 +84,71 @@ const getContractABI = (path_: string, fileName: string) => {
   return parsedFileData;
 };
 
-// export const declareContract = async (context: vscode.ExtensionContext) => {
-//   try {
-//     if (vscode.workspace.workspaceFolders === undefined) {
-//       logger.error("Error: Please open your solidity project to vscode");
-//       return;
-//     }
-//     const path_ = vscode.workspace.workspaceFolders[0].uri.fsPath;
-//     const provider = getNetworkProvider(context) as Provider;
-//     const selectedContract: string = context.workspaceState.get(
-//       "selectedContract"
-//     ) as string;
-//     const selectedAccount = context.workspaceState.get("account") as string;
-//     if (selectedAccount === undefined) {
-//       logger.log("No account selected.");
-//       return;
-//     }
-//     const accountInfo = getAccountInfo(context, selectedAccount);
-//     logger.log("Declaring contract...");
-//     const account = new Account(
-//       provider,
-//       accountInfo.accountAddress,
-//       accountInfo.privateKey,
-//       "0"
-//     );
-//     const contractInfo = getContractInfo(path_, selectedContract);
-//     if (contractInfo.classHash === "") {
-//       logger.log("No classHash available for selected contract.");
-//       return;
-//     }
-//     const compiledContract = fs.readFileSync(
-//       path.join(path_, selectedContract),
-//       {
-//         encoding: "ascii",
-//       }
-//     );
-//     const fileName = selectedContract.substring(0, selectedContract.length - 5);
+export const declareContract = async (context: vscode.ExtensionContext) => {
+  try {
+    if (vscode.workspace.workspaceFolders === undefined) {
+      logger.error("Error: Please open your solidity project to vscode");
+      return;
+    }
+    const path_ = vscode.workspace.workspaceFolders[0].uri.fsPath;
+    const provider = getNetworkProvider(context) as Provider;
+    const selectedContract: string = context.workspaceState.get(
+      "selectedContract"
+    ) as string;
+    const selectedAccount = context.workspaceState.get("account") as string;
+    if (selectedAccount === undefined) {
+      logger.log("No account selected.");
+      return;
+    }
+    const accountInfo = getAccountInfo(context, selectedAccount);
 
-//     const casmFileData = fs
-//       .readFileSync(path.join(path_, `${fileName}.casm`))
-//       .toString("ascii");
+    const account = new Account(
+      provider,
+      accountInfo.accountAddress,
+      accountInfo.privateKey,
+      "0"
+    );
+    const fileName = selectedContract.substring(0, selectedContract.length - 5);
 
-//     const casmAssembly: CairoAssembly = JSON.parse(casmFileData);
+    if (
+      !fs.existsSync(path.join(path_, selectedContract)) ||
+      !fs.existsSync(path.join(path_, `${fileName}.casm`))
+    ) {
+      logger.log(`${fileName}.json or ${fileName}.casm must be present.`);
+      return;
+    }
 
-//     const declareResponse = await account.declareAndDeploy({
-//       contract: compiledContract,
-//       casm: casmAssembly,
-//     });
+    const compiledContract = fs.readFileSync(
+      path.join(path_, selectedContract),
+      {
+        encoding: "ascii",
+      }
+    );
 
-//     logger.log(
-//       `declare transaction hash: ${declareResponse.declare.transaction_hash}`
-//     );
+    const casmFileData = fs
+      .readFileSync(path.join(path_, `${fileName}.casm`))
+      .toString("ascii");
 
-//     await provider.waitForTransaction(
-//       declareResponse.declare.transaction_hash as string
-//     );
+    const casmAssembly: CairoAssembly = JSON.parse(casmFileData);
 
-//     logger.log("transaction successful");
-//     // logger.log(
-//     //   `deploy transaction hash: ${declareResponse.deploy.transaction_hash}`
-//     // );
+    logger.log("Declaring contract...");
 
-//     // await provider.waitForTransaction(
-//     //   declareResponse.deploy.transaction_hash as string
-//     // );
+    const declareResponse = await account.declareAndDeploy({
+      contract: compiledContract,
+      casm: casmAssembly,
+    });
 
-//     // logger.log(
-//     //   `${fileName} is deployed on address: ${declareResponse.deploy.contract_address}`
-//     // );
-//   } catch (error) {
-//     logger.log(`Error while contract declaration: ${error}`);
-//   }
-// };
+    logger.log(
+      `declare transaction hash: ${declareResponse.deploy.transaction_hash}`
+    );
+
+    logger.log(`declare classHash: ${declareResponse.deploy.classHash}`);
+
+    logger.log("transaction successful");
+  } catch (error) {
+    logger.log(`Error while contract declaration: ${error}`);
+  }
+};
 
 export const deployContract = async (context: vscode.ExtensionContext) => {
   try {
