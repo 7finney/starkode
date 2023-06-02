@@ -18,54 +18,54 @@
   "contributes": {
     "commands": [
       {
-        "command": "starknet.activate",
-        "title": "activate starkode extension",
-        "category": "Starknet"
+        "command": "starkode.activate",
+        "title": "Activate starkode extension",
+        "category": "Starkode"
       },
       {
-        "command": "starknet.selectnetwork",
+        "command": "starkode.selectnetwork",
         "title": "Select starknet network",
-        "category": "Starknet"
+        "category": "Starkode"
       },
       {
-        "command": "starknet.createaccount",
-        "title": "Create starkode new account",
-        "category": "Starknet"
+        "command": "starkode.createaccount",
+        "title": "Create new account",
+        "category": "Starkode"
       },
       {
-        "command": "starknet.unDeployedAccount",
-        "title": "Select starkode undeployed account",
-        "category": "Starknet"
+        "command": "starkode.unDeployedAccount",
+        "title": "Select undeployed account",
+        "category": "Starkode"
       },
       {
-        "command": "starknet.deployaccount",
-        "title": "Deploy starkode new account",
-        "category": "Starknet"
+        "command": "starkode.deployaccount",
+        "title": "Deploy selected account",
+        "category": "Starkode"
       },
       {
-        "command": "starknet.selectaccount",
-        "title": "Select starkode account",
-        "category": "Starknet"
+        "command": "starkode.selectaccount",
+        "title": "Select account",
+        "category": "Starkode"
       },
       {
-        "command": "starknet.selectContract",
+        "command": "starkode.selectContract",
         "title": "Select cairo contract",
-        "category": "Starknet"
+        "category": "Starkode"
       },
       {
-        "command": "starknet.declareContract",
+        "command": "starkode.declareContract",
         "title": "Declare cairo contact",
-        "category": "Starknet"
+        "category": "Starkode"
       },
       {
-        "command": "starknet.deployContract",
+        "command": "starkode.deployContract",
         "title": "Deploy cairo contract",
-        "category": "Starknet"
+        "category": "Starkode"
       },
       {
-        "command": "starknet.callFunction",
+        "command": "starkode.callFunction",
         "title": "Call contact method",
-        "category": "Starknet"
+        "category": "Starkode"
       }
     ]
   },

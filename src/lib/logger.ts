@@ -19,7 +19,7 @@ export class Logger {
   private outputChannel: OutputChannel;
 
   constructor(name?: string) {
-    this.outputChannel = window.createOutputChannel(name || "Ethcode");
+    this.outputChannel = window.createOutputChannel(name || "Starkode");
   }
 
   private getNow = (): string => {
