@@ -35,13 +35,32 @@ export const getNetworkProvider = (
   context: vscode.ExtensionContext
 ): Provider | undefined => {
   const selectedNetwork: any = context.workspaceState.get("selectedNetwork");
-  if (selectedNetwork === undefined) {
+  let networkBaseUrl: string | undefined = undefined;
+
+  switch (selectedNetwork) {
+    case NETWORKS[0]: {
+      networkBaseUrl = "https://alpha4.starknet.io";
+      break;
+    }
+    case NETWORKS[1]: {
+      networkBaseUrl = "https://alpha4-2.starknet.io";
+      break;
+    }
+    case NETWORKS[2]: {
+      networkBaseUrl = "https://alpha-mainnet.starknet.io";
+      break;
+    }
+    default: {
+      break;
+    }
+  }
+  if (networkBaseUrl === undefined) {
     logger.log("No network selected.");
     return;
   }
 
   const provider = new Provider({
-    sequencer: { baseUrl: "https://alpha4.starknet.io" },
+    sequencer: { baseUrl: networkBaseUrl },
   });
   return provider;
 };
