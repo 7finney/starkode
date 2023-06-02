@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import * as fs from "fs";
 import path from "path";
 import { logger } from "../lib";
-import { ABIFragment } from "../types";
+import { ABIFragment, JSONAccountType, TIsAccountDeployed } from "../types";
 
 export const createABIFile = (file: string) => {
   try {
@@ -88,4 +88,30 @@ export const createAddressFile = (file: string) => {
   } catch (error) {
     logger.log(`Error while writing to file: ${error}`);
   }
+};
+
+export const accountDeployStatus = (
+  accounts: Array<JSONAccountType>,
+  selectedNetwork: string,
+  status: boolean
+) => {
+  const networks = ["goerli-alpha", "goerli-alpha-2", "mainnet-alpha"];
+  let result: Array<JSONAccountType> | undefined;
+  switch (selectedNetwork) {
+    case networks[0]: {
+      result = accounts.filter((e) => e.isDeployed.gAlpha === status);
+      break;
+    }
+    case networks[1]: {
+      result = accounts.filter((e) => e.isDeployed.gAlpha2 === status);
+      break;
+    }
+    case networks[2]: {
+      result = accounts.filter((e) => e.isDeployed.mainnet === status);
+      break;
+    }
+    default:
+      break;
+  }
+  return result;
 };

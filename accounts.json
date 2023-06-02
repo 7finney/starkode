@@ -7,7 +7,11 @@
     "accountPubKey": "0x2c12e3403b9af38a38b015c4b46767d656625dcb3e6c53680fa4e560cf1947f",
     "accountAddress": "0x58cb2b8f4767e53198e4b6a6e7a652bbc56e22c86a795620d0b982d0e01130",
     "privateKey": "0x77132fc28225864364c8b322b997c9d0f0955618c456afe143154bb3e28072a",
-    "isDeployed": false
+    "isDeployed": {
+      "gAlpha": false,
+      "gAlpha2": false,
+      "mainnet": false
+    }
   },
   {
     "accountHash": "0x06f3ec04229f8f9663ee7d5bb9d2e06f213ba8c20eb34c58c25a54ef8fc591cb",
@@ -17,6 +21,10 @@
     "accountPubKey": "0x7b30d350dd505d52574eda3af1067bb6f7cb2490ceec9f1876e5ab38ac5534c",
     "accountAddress": "0x20194e37d23eaee9f1fe1c40c9fafa5f2667dc531a5a1edadbf8d2a23d3224a",
     "privateKey": "0x110b08fd7f5c93776f499e876715c4f37995a64799efccbfd98188342255d75",
-    "isDeployed": true
+    "isDeployed": {
+      "gAlpha": true,
+      "gAlpha2": false,
+      "mainnet": false
+    }
   }
 ]
