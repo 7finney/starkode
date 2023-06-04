@@ -12,7 +12,7 @@ import {
 } from "starknet";
 import { logger } from "../lib";
 import { IAccountQP, JSONAccountType } from "../types";
-import { getNetworkProvider } from "./network";
+import { NETWORKS, getNetworkProvider } from "./network";
 import { accountDeployStatus } from "../utils/functions";
 
 export const createOZAccount = async (context: vscode.ExtensionContext) => {
@@ -177,7 +177,11 @@ export const deployAccount = async (context: vscode.ExtensionContext) => {
     if (account.accountAddress === selectedAccount.accountAddress) {
       return {
         ...account,
-        isDeployed: true,
+        isDeployed: {
+          gAlpha: selectedNetwork === NETWORKS[0] ? true : false,
+          gAlpha2: selectedNetwork === NETWORKS[1] ? true : false,
+          mainnet: selectedNetwork === NETWORKS[2] ? true : false,
+        },
       };
     } else {
       return account;
@@ -206,7 +210,7 @@ const getDeployedAccounts = (context: vscode.ExtensionContext) => {
     true
   );
   if (accounts === undefined || accounts.length === 0) {
-    logger.log(`No undeployed account available on ${selectedNetwork}`);
+    logger.log(`No deployed account available on ${selectedNetwork}`);
     return;
   }
   return accounts;

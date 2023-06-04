@@ -3,7 +3,7 @@ import { logger } from "../lib";
 import { INetworkQP } from "../types";
 import { Provider, SequencerProviderOptions } from "starknet";
 
-const NETWORKS = ["goerli-alpha", "goerli-alpha-2", "mainnet-alpha"];
+export const NETWORKS = ["goerli-alpha", "goerli-alpha-2", "mainnet-alpha"];
 
 export const updateSelectedNetwork = async (
   context: vscode.ExtensionContext
