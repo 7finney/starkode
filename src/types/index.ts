@@ -4,13 +4,19 @@ import { QuickPickItem } from "vscode";
 export interface INetworkQP extends QuickPickItem {
   label: string;
 }
+
+export interface TIsAccountDeployed {
+  gAlpha: boolean;
+  gAlpha2: boolean;
+  mainnet: boolean;
+}
 export interface JSONAccountType {
   accountHash: string;
   constructorCallData: Calldata;
   accountPubKey: string;
   accountAddress: string;
   privateKey: string;
-  isDeployed: boolean;
+  isDeployed: TIsAccountDeployed;
 }
 
 export interface IAccountQP extends QuickPickItem {
@@ -40,4 +46,5 @@ export interface ABIFragment {
   stateMutability: string;
   type: string;
   outputs: Array<outputType>;
+  state_mutability?: string;
 }

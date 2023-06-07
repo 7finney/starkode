@@ -23,37 +23,37 @@ export function activate(context: vscode.ExtensionContext) {
   }
   const path_ = vscode.workspace.workspaceFolders[0].uri.fsPath;
   context.subscriptions.push(
-    vscode.commands.registerCommand("starknet.activate", () => {
-      if (!fs.existsSync(path.join(path_, "starkex"))) {
-        fs.mkdirSync(path.join(path_, "starkex"));
+    vscode.commands.registerCommand("starkode.activate", () => {
+      if (!fs.existsSync(path.join(path_, "starkode"))) {
+        fs.mkdirSync(path.join(path_, "starkode"));
       }
-      vscode.window.showInformationMessage("StarkEx activated.");
+      vscode.window.showInformationMessage("Starkode activated.");
     }),
-    vscode.commands.registerCommand("starknet.selectnetwork", async () => {
+    vscode.commands.registerCommand("starkode.selectnetwork", async () => {
       await updateSelectedNetwork(context);
     }),
-    vscode.commands.registerCommand("starknet.createaccount", async () => {
+    vscode.commands.registerCommand("starkode.createaccount", async () => {
       createOZAccount(context);
     }),
-    vscode.commands.registerCommand("starknet.unDeployedAccount", async () => {
+    vscode.commands.registerCommand("starkode.unDeployedAccount", async () => {
       selectNotDeployedAccount(context);
     }),
-    vscode.commands.registerCommand("starknet.deployaccount", async () => {
-      await deployAccount(context);
-    }),
-    vscode.commands.registerCommand("starknet.selectaccount", async () => {
-      await selectDeployedAccount(context);
-    }),
-    vscode.commands.registerCommand("starknet.selectContract", async () => {
-      selectCompiledContract(context);
-    }),
-    vscode.commands.registerCommand("starknet.declareContract", async () => {
+    vscode.commands.registerCommand("starkode.declareContract", async () => {
       await declareContract(context);
     }),
-    vscode.commands.registerCommand("starknet.deployContract", async () => {
+    vscode.commands.registerCommand("starkode.deployaccount", async () => {
+      await deployAccount(context);
+    }),
+    vscode.commands.registerCommand("starkode.selectaccount", async () => {
+      await selectDeployedAccount(context);
+    }),
+    vscode.commands.registerCommand("starkode.selectContract", async () => {
+      selectCompiledContract(context);
+    }),
+    vscode.commands.registerCommand("starkode.deployContract", async () => {
       await deployContract(context);
     }),
-    vscode.commands.registerCommand("starknet.callFunction", async () => {
+    vscode.commands.registerCommand("starkode.callFunction", async () => {
       await executeContractFunction(context);
     })
   );

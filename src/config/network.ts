@@ -1,9 +1,9 @@
 import * as vscode from "vscode";
 import { logger } from "../lib";
 import { INetworkQP } from "../types";
-import { Provider } from "starknet";
+import { Provider, SequencerProviderOptions } from "starknet";
 
-const NETWORKS = ["goerli-alpha", "goerli-alpha-2", "mainnet-alpha"];
+export const NETWORKS = ["goerli-alpha", "goerli-alpha-2", "mainnet-alpha"];
 
 export const updateSelectedNetwork = async (
   context: vscode.ExtensionContext
@@ -35,12 +35,32 @@ export const getNetworkProvider = (
   context: vscode.ExtensionContext
 ): Provider | undefined => {
   const selectedNetwork: any = context.workspaceState.get("selectedNetwork");
-  if (selectedNetwork === undefined) {
+  let networkBaseUrl: string | undefined = undefined;
+
+  switch (selectedNetwork) {
+    case NETWORKS[0]: {
+      networkBaseUrl = "https://alpha4.starknet.io";
+      break;
+    }
+    case NETWORKS[1]: {
+      networkBaseUrl = "https://alpha4-2.starknet.io";
+      break;
+    }
+    case NETWORKS[2]: {
+      networkBaseUrl = "https://alpha-mainnet.starknet.io";
+      break;
+    }
+    default: {
+      break;
+    }
+  }
+  if (networkBaseUrl === undefined) {
     logger.log("No network selected.");
     return;
   }
+
   const provider = new Provider({
-    sequencer: { network: selectedNetwork },
+    sequencer: { baseUrl: networkBaseUrl },
   });
   return provider;
 };

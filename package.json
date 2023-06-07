@@ -1,10 +1,10 @@
 {
-  "name": "Starkex",
-  "displayName": "Starkex",
+  "name": "starkode",
+  "displayName": "Starkode",
   "description": "Extension for execution of contracts written in cairo.",
-  "version": "0.0.1",
-  "publisher": "Aniket6990",
-  "repository": "https://github.com/Aniket6990/stark-extension.git",
+  "version": "0.0.2",
+  "publisher": "7finney",
+  "repository": "https://github.com/7finney/starkode.git",
   "engines": {
     "vscode": "^1.74.0"
   },
@@ -18,54 +18,54 @@
   "contributes": {
     "commands": [
       {
-        "command": "starknet.activate",
-        "title": "activate Starkex extension",
-        "category": "Starknet"
+        "command": "starkode.activate",
+        "title": "Activate starkode extension",
+        "category": "Starkode"
       },
       {
-        "command": "starknet.selectnetwork",
+        "command": "starkode.selectnetwork",
         "title": "Select starknet network",
-        "category": "Starknet"
+        "category": "Starkode"
       },
       {
-        "command": "starknet.createaccount",
-        "title": "Create starkex new account",
-        "category": "Starknet"
+        "command": "starkode.createaccount",
+        "title": "Create new account",
+        "category": "Starkode"
       },
       {
-        "command": "starknet.unDeployedAccount",
-        "title": "Select starkex undeployed account",
-        "category": "Starknet"
+        "command": "starkode.unDeployedAccount",
+        "title": "Select undeployed account",
+        "category": "Starkode"
       },
       {
-        "command": "starknet.deployaccount",
-        "title": "Deploy starkex new account",
-        "category": "Starknet"
+        "command": "starkode.deployaccount",
+        "title": "Deploy selected account",
+        "category": "Starkode"
       },
       {
-        "command": "starknet.selectaccount",
-        "title": "Select starkex account",
-        "category": "Starknet"
+        "command": "starkode.selectaccount",
+        "title": "Select account",
+        "category": "Starkode"
       },
       {
-        "command": "starknet.selectContract",
+        "command": "starkode.selectContract",
         "title": "Select cairo contract",
-        "category": "Starknet"
+        "category": "Starkode"
       },
       {
-        "command": "starknet.declareContract",
-        "title": "Declare cairo contract",
-        "category": "Starknet"
+        "command": "starkode.declareContract",
+        "title": "Declare cairo contact",
+        "category": "Starkode"
       },
       {
-        "command": "starknet.deployContract",
+        "command": "starkode.deployContract",
         "title": "Deploy cairo contract",
-        "category": "Starknet"
+        "category": "Starkode"
       },
       {
-        "command": "starknet.callFunction",
+        "command": "starkode.callFunction",
         "title": "Call contact method",
-        "category": "Starknet"
+        "category": "Starkode"
       }
     ]
   },
@@ -86,6 +86,6 @@
   "dependencies": {
     "@types/bn.js": "^5.1.1",
     "@types/elliptic": "^6.4.14",
-    "starknet": "^4.22.0"
+    "starknet": "5.10.0"
   }
 }

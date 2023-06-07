@@ -1,23 +1,32 @@
 import * as vscode from "vscode";
 import * as fs from "fs";
-import { Account, ec, json, stark, Provider, hash } from "starknet";
+import {
+  Account,
+  ec,
+  json,
+  stark,
+  Provider,
+  hash,
+  CallData,
+  Signer,
+} from "starknet";
 import { logger } from "../lib";
 import { IAccountQP, JSONAccountType } from "../types";
-import { getNetworkProvider } from "./network";
+import { NETWORKS, getNetworkProvider } from "./network";
+import { accountDeployStatus } from "../utils/functions";
 
-export const createOZAccount = (context: vscode.ExtensionContext) => {
+export const createOZAccount = async (context: vscode.ExtensionContext) => {
   try {
     const privateKey = stark.randomAddress();
-    const starkKeyPair = ec.getKeyPair(privateKey);
-    const starkKeyPub = ec.getStarkKey(starkKeyPair);
+    const publicKey = await new Signer(privateKey).getPubKey();
 
     const OZaccountClassHash =
-      "0x2794ce20e5f2ff0d40e632cb53845b9f4e526ebd8471983f7dbd355b721d5a";
-    const OZaccountConstructorCallData = stark.compileCalldata({
-      publicKey: starkKeyPub,
+      "0x06f3ec04229f8f9663ee7d5bb9d2e06f213ba8c20eb34c58c25a54ef8fc591cb";
+    const OZaccountConstructorCallData = CallData.compile({
+      publicKey: publicKey,
     });
     const OZcontractAddress = hash.calculateContractAddressFromHash(
-      starkKeyPub,
+      publicKey,
       OZaccountClassHash,
       OZaccountConstructorCallData,
       0
@@ -36,10 +45,14 @@ export const createOZAccount = (context: vscode.ExtensionContext) => {
         {
           accountHash: OZaccountClassHash,
           constructorCallData: OZaccountConstructorCallData,
-          accountPubKey: starkKeyPub,
+          accountPubKey: publicKey,
           accountAddress: OZcontractAddress,
           privateKey: privateKey,
-          isDeployed: false,
+          isDeployed: {
+            gAlpha: false,
+            gAlpha2: false,
+            mainnet: false,
+          },
         },
       ];
       fs.writeFileSync(
@@ -51,10 +64,14 @@ export const createOZAccount = (context: vscode.ExtensionContext) => {
         {
           accountHash: OZaccountClassHash,
           constructorCallData: OZaccountConstructorCallData,
-          accountPubKey: starkKeyPub,
+          accountPubKey: publicKey,
           accountAddress: OZcontractAddress,
           privateKey: privateKey,
-          isDeployed: false,
+          isDeployed: {
+            gAlpha: false,
+            gAlpha2: false,
+            mainnet: false,
+          },
         },
       ];
       fs.writeFileSync(
@@ -69,6 +86,11 @@ export const createOZAccount = (context: vscode.ExtensionContext) => {
 };
 
 const getNotDeployedAccounts = async (context: vscode.ExtensionContext) => {
+  const selectedNetwork: any = context.workspaceState.get("selectedNetwork");
+  if (selectedNetwork === undefined) {
+    logger.log("No network selected.");
+    return;
+  }
   if (!fs.existsSync(`${context.extensionPath}/accounts.json`)) {
     logger.log("No account exist.");
     return;
@@ -77,9 +99,15 @@ const getNotDeployedAccounts = async (context: vscode.ExtensionContext) => {
     encoding: "utf-8",
   });
   const parsedFileData: Array<JSONAccountType> = JSON.parse(fileData);
-  const accounts: Array<JSONAccountType> = parsedFileData.filter(
-    (e) => e.isDeployed === false
+  const accounts: Array<JSONAccountType> | undefined = accountDeployStatus(
+    parsedFileData,
+    selectedNetwork,
+    false
   );
+  if (accounts === undefined || accounts.length === 0) {
+    logger.log(`No undeployed account available on ${selectedNetwork}`);
+    return;
+  }
   return accounts;
 };
 export const selectNotDeployedAccount = async (
@@ -124,14 +152,14 @@ export const deployAccount = async (context: vscode.ExtensionContext) => {
   const selectedAccount: JSONAccountType = isAccountPresent[0];
 
   const selectedNetwork = context.workspaceState.get("selectedNetwork");
-  const accountKeyPair = ec.getKeyPair(selectedAccount.privateKey);
   const provider = getNetworkProvider(context);
   console.log(`Account address: ${selectedAccount.accountAddress}`);
   if (provider === undefined) return;
   const account = new Account(
     provider,
     selectedAccount.accountAddress,
-    accountKeyPair
+    selectedAccount.privateKey,
+    "1"
   );
   logger.log(
     `deploying account ${selectedAccount.accountAddress} on ${selectedNetwork}`
@@ -149,7 +177,11 @@ export const deployAccount = async (context: vscode.ExtensionContext) => {
     if (account.accountAddress === selectedAccount.accountAddress) {
       return {
         ...account,
-        isDeployed: true,
+        isDeployed: {
+          gAlpha: selectedNetwork === NETWORKS[0] ? true : false,
+          gAlpha2: selectedNetwork === NETWORKS[1] ? true : false,
+          mainnet: selectedNetwork === NETWORKS[2] ? true : false,
+        },
       };
     } else {
       return account;
@@ -163,6 +195,7 @@ export const deployAccount = async (context: vscode.ExtensionContext) => {
 };
 
 const getDeployedAccounts = (context: vscode.ExtensionContext) => {
+  const selectedNetwork: any = context.workspaceState.get("selectedNetwork");
   if (!fs.existsSync(`${context.extensionPath}/accounts.json`)) {
     logger.log("No account exist.");
     return;
@@ -171,9 +204,15 @@ const getDeployedAccounts = (context: vscode.ExtensionContext) => {
     encoding: "utf-8",
   });
   const parsedFileData: Array<JSONAccountType> = JSON.parse(fileData);
-  const accounts: Array<JSONAccountType> = parsedFileData.filter(
-    (e) => e.isDeployed === true
+  const accounts: Array<JSONAccountType> | undefined = accountDeployStatus(
+    parsedFileData,
+    selectedNetwork,
+    true
   );
+  if (accounts === undefined || accounts.length === 0) {
+    logger.log(`No deployed account available on ${selectedNetwork}`);
+    return;
+  }
   return accounts;
 };
 

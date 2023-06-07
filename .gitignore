@@ -3,3 +3,4 @@ accounts.json
 node_modules
 .vscode-test/
 *.vsix
+accounts.json
