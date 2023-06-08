@@ -68,7 +68,7 @@ export const selectCompiledContract = (context: vscode.ExtensionContext) => {
   quickPick.show();
 };
 
-const getContractInfo = (path_: string, fileName: string) => {
+export const getContractInfo = (path_: string, fileName: string) => {
   const file = fileName.substring(0, fileName.length - 5);
   const fileData = fs.readFileSync(
     path.join(path_, "starkode", file, `${file}_address.json`),
@@ -78,7 +78,7 @@ const getContractInfo = (path_: string, fileName: string) => {
   return parsedFileData;
 };
 
-const getContractABI = (path_: string, fileName: string) => {
+export const getContractABI = (path_: string, fileName: string) => {
   const file = fileName.substring(0, fileName.length - 5);
   const fileData = fs.readFileSync(
     path.join(path_, "starkode", file, `${file}_abi.json`),
