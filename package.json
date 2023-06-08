@@ -37,10 +37,6 @@
           "name": "Contracts"
         },
         {
-          "id": "starkode.constructor",
-          "name": "Constructor"
-        },
-        {
           "id": "starkode.abis",
           "name": "ABI"
         }

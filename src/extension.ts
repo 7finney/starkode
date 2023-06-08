@@ -17,7 +17,7 @@ import {
 import { updateSelectedNetwork } from "./config/network";
 import { logger } from "./lib";
 import { ContractTreeDataProvider } from "./treeView/ContractTreeView/ContractTreeDataProvider";
-import { refreshContract } from "./treeView/ContractTreeView/function";
+import { editContractAddress, refreshContract } from "./treeView/ContractTreeView/function";
 
 import { Contract as ContractTreeItem } from "./treeView/ContractTreeView/ContractTreeDataProvider";
 
@@ -54,6 +54,10 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand("starkode.useContract", async (node: ContractTreeItem) => {
       console.log(node);
       setContract(context,node.label);
+    }),
+
+    vscode.commands.registerCommand("starkode.editContractAddress", async (node: ContractTreeItem) => {
+      await editContractAddress(node,context);
     }),
 
     vscode.commands.registerCommand("starkode.deploycontract", async () => {
