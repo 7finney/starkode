@@ -8,7 +8,7 @@ import { getAccountInfo } from "./account";
 import { Account, CairoAssembly, Contract, ec, Provider } from "starknet";
 import { getNetworkProvider } from "./network";
 
-const loadAllCompiledContract = () => {
+export const loadAllCompiledContract = () => {
   if (vscode.workspace.workspaceFolders === undefined) {
     logger.error("Error: Please open your solidity project to vscode");
     return;
@@ -34,6 +34,13 @@ const exportPathOfJSONfiles = (path_: string, file: string) => {
   }
 };
 
+export const setContract = async (context: vscode.ExtensionContext,label:string) => {
+  void context.workspaceState.update("selectedContract", `${label}.json`);
+  logger.log(`${label} contract selected`);
+  createABIFile(`${label}.json`);
+  createAddressFile(`${label}.json`);
+};
+
 export const selectCompiledContract = (context: vscode.ExtensionContext) => {
   const contracts = loadAllCompiledContract();
   if (contracts === undefined) {
@@ -51,10 +58,7 @@ export const selectCompiledContract = (context: vscode.ExtensionContext) => {
   quickPick.onDidChangeSelection((selection: any) => {
     if (selection[0] != null) {
       const { label } = selection[0];
-      void context.workspaceState.update("selectedContract", `${label}.json`);
-      logger.log(`${label} contract selected`);
-      createABIFile(`${label}.json`);
-      createAddressFile(`${label}.json`);
+      setContract(context,label);
       quickPick.dispose();
     }
   });

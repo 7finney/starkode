@@ -12,9 +12,15 @@ import {
   deployContract,
   executeContractFunction,
   selectCompiledContract,
+  setContract,
 } from "./config/contract";
 import { updateSelectedNetwork } from "./config/network";
 import { logger } from "./lib";
+import { ContractTreeDataProvider } from "./treeView/ContractTreeView/ContractTreeDataProvider";
+import { refreshContract } from "./treeView/ContractTreeView/function";
+
+import { Contract as ContractTreeItem } from "./treeView/ContractTreeView/ContractTreeDataProvider";
+
 
 export function activate(context: vscode.ExtensionContext) {
   if (vscode.workspace.workspaceFolders === undefined) {
@@ -22,6 +28,17 @@ export function activate(context: vscode.ExtensionContext) {
     return;
   }
   const path_ = vscode.workspace.workspaceFolders[0].uri.fsPath;
+  
+  // Contract Tree View
+  const contractTreeDataProvider = new ContractTreeDataProvider(
+    vscode.workspace.workspaceFolders?.[0].uri.fsPath
+  );
+
+  let contractTreeView = vscode.window.createTreeView("starkode.contracts", {
+    treeDataProvider: contractTreeDataProvider,
+  });
+
+  
   context.subscriptions.push(
     vscode.commands.registerCommand("starkode.activate", () => {
       if (!fs.existsSync(path.join(path_, "starkode"))) {
@@ -29,6 +46,20 @@ export function activate(context: vscode.ExtensionContext) {
       }
       vscode.window.showInformationMessage("Starkode activated.");
     }),
+
+    vscode.commands.registerCommand("starkode.refreshContracts", async (node: ContractTreeItem) => {
+      contractTreeView = await refreshContract(node, contractTreeDataProvider);
+    }),
+    
+    vscode.commands.registerCommand("starkode.useContract", async (node: ContractTreeItem) => {
+      console.log(node);
+      setContract(context,node.label);
+    }),
+
+    vscode.commands.registerCommand("starkode.deploycontract", async () => {
+      await vscode.commands.executeCommand("starkode.declareContract");
+    }),
+    
     vscode.commands.registerCommand("starkode.selectnetwork", async () => {
       await updateSelectedNetwork(context);
     }),

@@ -5,6 +5,8 @@
   "version": "0.0.2",
   "publisher": "7finney",
   "repository": "https://github.com/7finney/starkode.git",
+  "license": "MIT",
+  "icon": "media/image.png",
   "engines": {
     "vscode": "^1.74.0"
   },
@@ -16,6 +18,34 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
+    "configuration": {
+      "title": "Starkode"
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "starkode-container",
+          "title": "Starkode",
+          "icon": "media/image.png"
+        }
+      ]
+    },
+    "views": {
+      "starkode-container": [
+        {
+          "id": "starkode.contracts",
+          "name": "Contracts"
+        },
+        {
+          "id": "starkode.constructor",
+          "name": "Constructor"
+        },
+        {
+          "id": "starkode.abis",
+          "name": "ABI"
+        }
+      ]
+    },
     "commands": [
       {
         "command": "starkode.activate",
@@ -66,8 +96,44 @@
         "command": "starkode.callFunction",
         "title": "Call contact method",
         "category": "Starkode"
+      },
+      {
+        "command": "starkode.refreshContracts",
+        "title": "Refresh",
+        "icon": "$(extensions-refresh)"
+      },
+      {
+        "command": "starkode.deploycontract",
+        "title": "Declare contract",
+        "icon": "$(play)"
+      },
+      {
+        "command": "starkode.editContractAddress",
+        "title": "Add / edit Constract Address",
+        "icon": "$(edit)"
       }
-    ]
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "starkode.refreshContracts",
+          "when": "view == starkode.contracts",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "starkode.editContractAddress",
+          "when": "view == starkode.contracts && viewItem == contract",
+          "group": "inline"
+        },
+        {
+          "command": "starkode.deploycontract",
+          "when": "view == starkode.contracts && viewItem == contract",
+          "group": "inline"
+        }
+      ]
+    }
   },
   "scripts": {
     "build": "npm run compile",
