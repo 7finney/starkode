@@ -47,6 +47,11 @@
         "command": "starkode.activate",
         "title": "Activate starkode extension",
         "category": "Starkode"
+      },      
+      {
+        "command": "starkode.editInput",
+        "title": "Edit input value",
+        "icon": "$(edit)"
       },
       {
         "command": "starkode.selectnetwork",
@@ -126,6 +131,11 @@
         {
           "command": "starkode.deploycontract",
           "when": "view == starkode.contracts && viewItem == contract",
+          "group": "inline"
+        },
+        {
+          "command": "starkode.editInput",
+          "when": "view == starkode.abis && viewItem == abiInput",
           "group": "inline"
         }
       ]

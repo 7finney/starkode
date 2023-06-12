@@ -22,6 +22,7 @@ import { editContractAddress, refreshContract } from "./treeView/ContractTreeVie
 
 import { Contract as ContractTreeItem } from "./treeView/ContractTreeView/ContractTreeDataProvider";
 import { AbiTreeDataProvider } from "./treeView/ABITreeView/AbiTreeDataProvider";
+import { editInput } from "./treeView/ABITreeView/functions";
 
 
 export function activate(context: vscode.ExtensionContext) {
@@ -92,6 +93,13 @@ export function activate(context: vscode.ExtensionContext) {
 
     vscode.commands.registerCommand("starkode.editContractAddress", async (node: ContractTreeItem) => {
       await editContractAddress(node, context);
+    }),
+
+    vscode.commands.registerCommand("starkode.editInput", async (node: any) => {
+      const selectedContract: string = context.workspaceState.get(
+        "selectedContract"
+      ) as string;
+      await editInput(node, abiTreeDataProvider,selectedContract);
     }),
 
     vscode.commands.registerCommand("starkode.deploycontract", async () => {
