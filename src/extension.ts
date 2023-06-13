@@ -11,6 +11,7 @@ import {
   declareContract,
   deployContract,
   executeContractFunction,
+  executeContractFunctionFromTreeView,
   getContractInfo,
   selectCompiledContract,
   setContract,
@@ -132,6 +133,10 @@ export function activate(context: vscode.ExtensionContext) {
     }),
     vscode.commands.registerCommand("starkode.callFunction", async () => {
       await executeContractFunction(context);
+    }),
+    vscode.commands.registerCommand("starkode.callContract", async (node: any) => {
+      console.log("Call" , node.abi);
+      await executeContractFunctionFromTreeView(context, node.abi);
     })
   );
 }

@@ -99,6 +99,11 @@
         "category": "Starkode"
       },
       {
+        "command": "starkode.callContract",
+        "title": "Call contract method",
+        "icon": "$(play)"
+      },
+      {
         "command": "starkode.refreshContracts",
         "title": "Refresh",
         "icon": "$(extensions-refresh)"
@@ -136,6 +141,11 @@
         {
           "command": "starkode.editInput",
           "when": "view == starkode.abis && viewItem == abiInput",
+          "group": "inline"
+        },
+        {
+          "command": "starkode.callContract",
+          "when": "view == starkode.abis && viewItem == abiReadFunction || viewItem == abiFunction",
           "group": "inline"
         }
       ]
