@@ -2,11 +2,14 @@ import * as vscode from "vscode";
 import { logger } from "../lib";
 import { INetworkQP } from "../types";
 import { Provider, SequencerProviderOptions } from "starknet";
+import { Account } from "../treeView/AccountTreeView/AccountTreeDataProvider";
 
 export const NETWORKS = ["goerli-alpha", "goerli-alpha-2", "mainnet-alpha"];
 
 export const updateSelectedNetwork = async (
-  context: vscode.ExtensionContext
+  context: vscode.ExtensionContext,
+  accountTreeView: vscode.TreeView<Account>,
+  accountTreeDataProvider: any
 ) => {
   const quickPick = vscode.window.createQuickPick<INetworkQP>();
 
@@ -23,6 +26,10 @@ export const updateSelectedNetwork = async (
       quickPick.dispose();
 
       logger.success(`Selected network is ${label}`);
+      const selectedNetwork: any = context.workspaceState.get("selectedNetwork");
+      const selectedAccount = context.workspaceState.get("account") as string;
+      accountTreeView.message = `Network : ${selectedNetwork} | Account : ${selectedAccount.slice(0, 5) + "..." + selectedAccount.slice(-5)}`;
+      accountTreeDataProvider.refresh();
     }
   });
   quickPick.onDidHide(() => {

@@ -85,7 +85,7 @@ export const createOZAccount = async (context: vscode.ExtensionContext) => {
   }
 };
 
-const getNotDeployedAccounts = async (context: vscode.ExtensionContext) => {
+export const getNotDeployedAccounts = async (context: vscode.ExtensionContext) => {
   const selectedNetwork: any = context.workspaceState.get("selectedNetwork");
   if (selectedNetwork === undefined) {
     logger.log("No network selected.");
@@ -194,7 +194,7 @@ export const deployAccount = async (context: vscode.ExtensionContext) => {
   logger.log(`Account deployed successfully at address: ${contract_address}`);
 };
 
-const getDeployedAccounts = (context: vscode.ExtensionContext) => {
+export const getDeployedAccounts = (context: vscode.ExtensionContext) => {
   const selectedNetwork: any = context.workspaceState.get("selectedNetwork");
   if (!fs.existsSync(`${context.extensionPath}/accounts.json`)) {
     logger.log("No account exist.");

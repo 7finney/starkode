@@ -24,6 +24,7 @@ import { editContractAddress, refreshContract } from "./treeView/ContractTreeVie
 import { Contract as ContractTreeItem } from "./treeView/ContractTreeView/ContractTreeDataProvider";
 import { AbiTreeDataProvider } from "./treeView/ABITreeView/AbiTreeDataProvider";
 import { editInput } from "./treeView/ABITreeView/functions";
+import { AccountTreeDataProvider } from "./treeView/AccountTreeView/AccountTreeDataProvider";
 
 
 export function activate(context: vscode.ExtensionContext) {
@@ -52,9 +53,23 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.workspace.workspaceFolders?.[0].uri.fsPath
   );
 
+
   let contractTreeView = vscode.window.createTreeView("starkode.contracts", {
     treeDataProvider: contractTreeDataProvider,
   });
+
+  // Account Tree View
+  const accountTreeDataProvider = new AccountTreeDataProvider(
+    context
+  );
+
+  let accountTreeView = vscode.window.createTreeView("starkode.account", {
+    treeDataProvider: accountTreeDataProvider,
+  });
+
+  const selectedNetwork: any = context.workspaceState.get("selectedNetwork");
+  const selectedAccount = context.workspaceState.get("account") as string;
+  accountTreeView.message = `Network : ${selectedNetwork} | Account : ${selectedAccount.slice(0, 5) + "..." + selectedAccount.slice(-5)}`;
 
   // ABI Tree View
   const abiTreeDataProvider = new AbiTreeDataProvider(
@@ -92,6 +107,40 @@ export function activate(context: vscode.ExtensionContext) {
       abiTreeDataProvider.refresh();
     }),
 
+    vscode.commands.registerCommand("starkode.useAccount", async (node: any) => {
+      console.log(node);
+      if (node.context === "deployedAccount") {
+
+        void context.workspaceState.update("account", node.account.accountAddress);
+        logger.log(`${node.account.accountAddress} selected`);
+        const selectedNetwork: any = context.workspaceState.get("selectedNetwork");
+        const selectedAccount = context.workspaceState.get("account") as string;
+        accountTreeView.message = `Network : ${selectedNetwork} | Account : ${selectedAccount.slice(0, 5) + "..." + selectedAccount.slice(-5)}`;
+        abiTreeDataProvider.refresh();
+      } else {
+        vscode.window.showErrorMessage("Please deploy the account first.");
+      }
+    }),
+    vscode.commands.registerCommand("starkode.createAccountTreeView", async () => {
+      console.log("createAccountTreeView");
+      createOZAccount(context);
+      accountTreeDataProvider.refresh();
+    }),
+    vscode.commands.registerCommand("starkode.selectNetwork", async () => {
+      console.log("selectNetwork");
+      await updateSelectedNetwork(context, accountTreeView, accountTreeDataProvider);
+    }),
+    vscode.commands.registerCommand("starkode.deployAccountTreeView", async (node: any) => {
+      console.log("deployAccountTreeView");
+      void context.workspaceState.update("undeployedAccount", node.account.accountAddress);
+      logger.log(`${node.account.accountAddress} selected`);
+      await deployAccount(context);
+      accountTreeDataProvider.refresh();
+    }),
+    vscode.commands.registerCommand("starkode.copyAccountAddress", async (node: any) => {
+      vscode.env.clipboard.writeText(node.account.accountAddress);
+    }),
+
     vscode.commands.registerCommand("starkode.editContractAddress", async (node: ContractTreeItem) => {
       await editContractAddress(node, context);
     }),
@@ -100,7 +149,7 @@ export function activate(context: vscode.ExtensionContext) {
       const selectedContract: string = context.workspaceState.get(
         "selectedContract"
       ) as string;
-      await editInput(node, abiTreeDataProvider,selectedContract);
+      await editInput(node, abiTreeDataProvider, selectedContract);
     }),
 
     vscode.commands.registerCommand("starkode.deploycontract", async () => {
@@ -108,7 +157,7 @@ export function activate(context: vscode.ExtensionContext) {
     }),
 
     vscode.commands.registerCommand("starkode.selectnetwork", async () => {
-      await updateSelectedNetwork(context);
+      await updateSelectedNetwork(context, accountTreeView, accountTreeDataProvider);
     }),
     vscode.commands.registerCommand("starkode.createaccount", async () => {
       createOZAccount(context);
@@ -135,7 +184,7 @@ export function activate(context: vscode.ExtensionContext) {
       await executeContractFunction(context);
     }),
     vscode.commands.registerCommand("starkode.callContract", async (node: any) => {
-      console.log("Call" , node.abi);
+      console.log("Call", node.abi);
       await executeContractFunctionFromTreeView(context, node.abi);
     })
   );

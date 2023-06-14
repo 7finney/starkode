@@ -33,6 +33,10 @@
     "views": {
       "starkode-container": [
         {
+          "id": "starkode.account",
+          "name": "ACCOUNT"
+        },
+        {
           "id": "starkode.contracts",
           "name": "Contracts"
         },
@@ -109,6 +113,26 @@
         "icon": "$(extensions-refresh)"
       },
       {
+        "command": "starkode.selectNetwork",
+        "title": "Select Network",
+        "icon": "$(plug)"
+      },
+      {
+        "command": "starkode.createAccountTreeView",
+        "title": "Create Account",
+        "icon": "$(plus)"
+      },
+      {
+        "command": "starkode.deployAccountTreeView",
+        "title": "Deploy Account",
+        "icon": "$(play)"
+      },
+      {
+        "command": "starkode.copyAccountAddress",
+        "title": "Copy Account Address",
+        "icon": "$(files)"
+      },
+      {
         "command": "starkode.deploycontract",
         "title": "Declare contract",
         "icon": "$(play)"
@@ -124,6 +148,16 @@
         {
           "command": "starkode.refreshContracts",
           "when": "view == starkode.contracts",
+          "group": "navigation"
+        },
+        {
+          "command": "starkode.createAccountTreeView",
+          "when": "view == starkode.account",
+          "group": "navigation"
+        },
+        {
+          "command": "starkode.selectNetwork",
+          "when": "view == starkode.account",
           "group": "navigation"
         }
       ],
@@ -146,6 +180,16 @@
         {
           "command": "starkode.callContract",
           "when": "view == starkode.abis && viewItem == abiReadFunction || viewItem == abiFunction",
+          "group": "inline"
+        },
+        {
+          "command": "starkode.deployAccountTreeView",
+          "when": "view == starkode.account && viewItem == undeployedAccount",
+          "group": "inline"
+        },
+        {
+          "command": "starkode.copyAccountAddress",
+          "when": "view == starkode.account && (viewItem == undeployedAccount || viewItem == deployedAccount)",
           "group": "inline"
         }
       ]
