@@ -13,6 +13,7 @@ import {
   executeContractFunction,
   executeContractFunctionFromTreeView,
   getContractInfo,
+  isCairo1Contract,
   selectCompiledContract,
   setContract,
 } from "./config/contract";
@@ -56,6 +57,13 @@ export function activate(context: vscode.ExtensionContext) {
 
   let contractTreeView = vscode.window.createTreeView("starkode.contracts", {
     treeDataProvider: contractTreeDataProvider,
+  });
+
+  contractTreeView.onDidChangeSelection(event => {
+    const selectedNodes = event.selection;
+    if (selectedNodes && selectedNodes.length > 0) {
+      console.log('Selected nodes:', selectedNodes[0].label);
+    }
   });
 
   // Account Tree View
@@ -152,8 +160,22 @@ export function activate(context: vscode.ExtensionContext) {
       await editInput(node, abiTreeDataProvider, selectedContract);
     }),
 
-    vscode.commands.registerCommand("starkode.deploycontract", async () => {
-      await vscode.commands.executeCommand("starkode.declareContract");
+    vscode.commands.registerCommand("starkode.deploycontract", async (node : any) => {
+      console.log("deploycontract");
+      console.log(node);
+      const selectedContract: string = context.workspaceState.get(
+        "selectedContract"
+        ) as string;
+        console.log(selectedContract);
+        if(selectedContract.slice(0, -5) !== node.label){
+          logger.log("Please select the contract first.");
+        } else {
+          if (isCairo1Contract(selectedContract)){
+            await vscode.commands.executeCommand("starkode.declareContract");
+          } else {
+            await vscode.commands.executeCommand("starkode.deployContract");
+          }
+        }
     }),
 
     vscode.commands.registerCommand("starkode.selectnetwork", async () => {

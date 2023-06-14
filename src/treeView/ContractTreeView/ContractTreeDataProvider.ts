@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { loadAllCompiledContract } from "../../config/contract";
+import { isCairo1Contract, loadAllCompiledContract } from "../../config/contract";
 
 export class ContractTreeDataProvider
   implements vscode.TreeDataProvider<Contract>
@@ -19,7 +19,7 @@ export class ContractTreeDataProvider
     } else {
       const leaves = [];
       for (const file of contracts) {
-        leaves.push(new Contract(file.slice(0, -5), vscode.TreeItemCollapsibleState.None));
+        leaves.push(new Contract(file.slice(0, -5), vscode.TreeItemCollapsibleState.None,"contract"));
       }
       return leaves;
     }
@@ -39,10 +39,11 @@ export class Contract extends vscode.TreeItem {
   contextValue: string;
   constructor(
     public readonly label: string,
-    public readonly collapsibleState: vscode.TreeItemCollapsibleState
+    public readonly collapsibleState: vscode.TreeItemCollapsibleState,
+    public readonly context: string
   ) {
     super(label, collapsibleState);
-    this.contextValue = "contract";
+    this.contextValue = context;
   }
 
   command = {
