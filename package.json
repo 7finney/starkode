@@ -51,7 +51,7 @@
         "command": "starkode.activate",
         "title": "Activate starkode extension",
         "category": "Starkode"
-      },      
+      },
       {
         "command": "starkode.editInput",
         "title": "Edit input value",

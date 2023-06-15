@@ -1,8 +1,8 @@
 Arguments: 
-  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js
+  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js add –g vsce
 
 PATH: 
-  C:\Python311\Scripts\;C:\Python311\;C:\Python310\Scripts\;C:\Python310\;C:\MinGW\bin;C:\oracle\product\10.2.0\db_1\bin;F:\oracle\product\10.2.0\db_1\bin;C:\app\krish\product\18.0.0\dbhomeXE\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Java\jdk-15.0.1\bin;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\;C:\Program Files\dotnet\;C:\Program Files\Git\cmd;C:\ProgramData\chocolatey\bin;C:\src\flutter\bin;C:\Program Files\MongoDB\Server\6.0\bin;C:\Program Files\Docker\Docker\resources\bin;C:\ProgramData\DockerDesktop\version-bin;C:\Program Files (x86)\Yarn\bin\;C:\Program Files\MySQL\MySQL Server 8.0\bin;C:\Program Files\nodejs\;C:\Program Files\PuTTY\;C:\Program Files\Amazon\AWSCLIV2\;C:\Users\krish\.local\share\solana\install\active_release\bin;C:\Users\krish\AppData\Local\Programs\Python\Python39\Scripts\;C:\Users\krish\AppData\Local\Programs\Python\Python39\;C:\MinGW\bin;C:\Program Files\Java\jdk-17.0.3.1\bin;C:\oracle\product\10.2.0\db_1\bin;F:\oracle\product\10.2.0\db_1\bin;C:\app\krish\product\18.0.0\dbhomeXE\bin;C:\Program Files\Common Files\Oracle\Java\javapath;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Git\cmd;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\;C:\Program Files\nodejs\;C:\Program Files\Docker\Docker\resources\bin;C:\ProgramData\DockerDesktop\version-bin;C:\Program Files (x86)\Brackets\command;C:\Program Files\dotnet\;C:\Program Files\MySQL\MySQL Shell 8.0\bin\;C:\Users\krish\AppData\Local\Microsoft\WindowsApps;C:\Program Files\JetBrains\PyCharm Community Edition 2020.3\bin;C:\Program Files\Je;;C:\Users\krish\Apps\kubo_v0.16.0\kubo
+  C:\Python311\Scripts\;C:\Python311\;C:\Python310\Scripts\;C:\Python310\;C:\MinGW\bin;C:\oracle\product\10.2.0\db_1\bin;F:\oracle\product\10.2.0\db_1\bin;C:\app\krish\product\18.0.0\dbhomeXE\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Java\jdk-15.0.1\bin;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\;C:\Program Files\dotnet\;C:\Program Files\Git\cmd;C:\ProgramData\chocolatey\bin;C:\src\flutter\bin;C:\Program Files\MongoDB\Server\6.0\bin;C:\Program Files\Docker\Docker\resources\bin;C:\ProgramData\DockerDesktop\version-bin;C:\Program Files (x86)\Yarn\bin\;C:\Program Files\MySQL\MySQL Server 8.0\bin;C:\Program Files\nodejs\;C:\Program Files\PuTTY\;C:\Program Files\Amazon\AWSCLIV2\;C:\Users\krish\.local\share\solana\install\active_release\bin;C:\Users\krish\AppData\Local\Programs\Python\Python39\Scripts\;C:\Users\krish\AppData\Local\Programs\Python\Python39\;C:\MinGW\bin;C:\Program Files\Java\jdk-17.0.3.1\bin;C:\oracle\product\10.2.0\db_1\bin;F:\oracle\product\10.2.0\db_1\bin;C:\app\krish\product\18.0.0\dbhomeXE\bin;C:\Program Files\Common Files\Oracle\Java\javapath;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Git\cmd;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\;C:\Program Files\nodejs\;C:\Program Files\Docker\Docker\resources\bin;C:\ProgramData\DockerDesktop\version-bin;C:\Program Files (x86)\Brackets\command;C:\Program Files\dotnet\;C:\Program Files\MySQL\MySQL Shell 8.0\bin\;C:\Users\krish\AppData\Local\Microsoft\WindowsApps;C:\Program Files\JetBrains\PyCharm Community Edition 2020.3\bin;C:\Program Files\Je;C:\Users\krish\AppData\Local\Programs\Microsoft VS Code\bin;;C:\Users\krish\Apps\kubo_v0.16.0\kubo
 
 Yarn version: 
   1.22.19
@@ -14,12 +14,15 @@ Platform:
   win32 x64
 
 Trace: 
-  SyntaxError: C:\Users\krish\Desktop\mathcode\starkode\package.json: Unexpected token ] in JSON at position 3410
-      at JSON.parse (<anonymous>)
-      at C:\Program Files (x86)\Yarn\lib\cli.js:1629:59
-      at Generator.next (<anonymous>)
-      at step (C:\Program Files (x86)\Yarn\lib\cli.js:310:30)
-      at C:\Program Files (x86)\Yarn\lib\cli.js:321:13
+  TypeError [ERR_UNESCAPED_CHARACTERS]: https://registry.yarnpkg.com/–g: Request path contains unescaped characters
+      at new NodeError (node:internal/errors:399:5)
+      at new ClientRequest (node:_http_client:184:13)
+      at Object.request (node:https:360:10)
+      at module.exports.Request.start (C:\Program Files (x86)\Yarn\lib\cli.js:141452:32)
+      at module.exports.Request.end (C:\Program Files (x86)\Yarn\lib\cli.js:142211:10)
+      at end (C:\Program Files (x86)\Yarn\lib\cli.js:141265:14)
+      at Immediate.<anonymous> (C:\Program Files (x86)\Yarn\lib\cli.js:141279:7)
+      at process.processImmediate (node:internal/timers:476:21)
 
 npm manifest: 
   {
@@ -57,12 +60,12 @@ npm manifest:
       "views": {
         "starkode-container": [
           {
-            "id": "starkode.contracts",
-            "name": "Contracts"
+            "id": "starkode.account",
+            "name": "ACCOUNT"
           },
           {
-            "id": "starkode.constructor",
-            "name": "Constructor"
+            "id": "starkode.contracts",
+            "name": "Contracts"
           },
           {
             "id": "starkode.abis",
@@ -75,6 +78,11 @@ npm manifest:
           "command": "starkode.activate",
           "title": "Activate starkode extension",
           "category": "Starkode"
+        },      
+        {
+          "command": "starkode.editInput",
+          "title": "Edit input value",
+          "icon": "$(edit)"
         },
         {
           "command": "starkode.selectnetwork",
@@ -122,13 +130,38 @@ npm manifest:
           "category": "Starkode"
         },
         {
+          "command": "starkode.callContract",
+          "title": "Call contract method",
+          "icon": "$(play)"
+        },
+        {
           "command": "starkode.refreshContracts",
           "title": "Refresh",
           "icon": "$(extensions-refresh)"
         },
         {
-          "command": "starkode.deployContract",
-          "title": "Deploy contract",
+          "command": "starkode.selectNetwork",
+          "title": "Select Network",
+          "icon": "$(plug)"
+        },
+        {
+          "command": "starkode.createAccountTreeView",
+          "title": "Create Account",
+          "icon": "$(plus)"
+        },
+        {
+          "command": "starkode.deployAccountTreeView",
+          "title": "Deploy Account",
+          "icon": "$(play)"
+        },
+        {
+          "command": "starkode.copyAccountAddress",
+          "title": "Copy Account Address",
+          "icon": "$(files)"
+        },
+        {
+          "command": "starkode.deploycontract",
+          "title": "Declare contract",
           "icon": "$(play)"
         },
         {
@@ -143,6 +176,16 @@ npm manifest:
             "command": "starkode.refreshContracts",
             "when": "view == starkode.contracts",
             "group": "navigation"
+          },
+          {
+            "command": "starkode.createAccountTreeView",
+            "when": "view == starkode.account",
+            "group": "navigation"
+          },
+          {
+            "command": "starkode.selectNetwork",
+            "when": "view == starkode.account",
+            "group": "navigation"
           }
         ],
         "view/item/context": [
@@ -152,10 +195,30 @@ npm manifest:
             "group": "inline"
           },
           {
-            "command": "starkode.deployContract",
+            "command": "starkode.deploycontract",
             "when": "view == starkode.contracts && viewItem == contract",
             "group": "inline"
           },
+          {
+            "command": "starkode.editInput",
+            "when": "view == starkode.abis && viewItem == abiInput",
+            "group": "inline"
+          },
+          {
+            "command": "starkode.callContract",
+            "when": "view == starkode.abis && viewItem == abiReadFunction || viewItem == abiFunction",
+            "group": "inline"
+          },
+          {
+            "command": "starkode.deployAccountTreeView",
+            "when": "view == starkode.account && viewItem == undeployedAccount",
+            "group": "inline"
+          },
+          {
+            "command": "starkode.copyAccountAddress",
+            "when": "view == starkode.account && (viewItem == undeployedAccount || viewItem == deployedAccount)",
+            "group": "inline"
+          }
         ]
       }
     },
