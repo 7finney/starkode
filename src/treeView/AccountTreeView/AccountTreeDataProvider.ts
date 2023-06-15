@@ -22,25 +22,27 @@ export class AccountTreeDataProvider
       return [];
     } else {
       const leaves = [];
-      leaves.push(new Account("Deployed Accounts", vscode.TreeItemCollapsibleState.None, "deployed", undefined));
+      // leaves.push(new Account("Deployed Accounts", vscode.TreeItemCollapsibleState.None, "deployed", undefined));
       if (accounts !== undefined) {
         for (const account of accounts) {
           leaves.push(new Account(
             account.accountAddress.slice(0, 5) + "..." + account.accountAddress.slice(-5),
             vscode.TreeItemCollapsibleState.None,
             "deployedAccount",
-            account
+            account,
+            "verified"
           ));
         }
       }
-      leaves.push(new Account("Undeployed Accounts", vscode.TreeItemCollapsibleState.None, "undeployed", undefined));
+      // leaves.push(new Account("Undeployed Accounts", vscode.TreeItemCollapsibleState.None, "undeployed", undefined));
       if (undeployedAccounts !== undefined) {
         for (const account of undeployedAccounts) {
           leaves.push(new Account(
             account.accountAddress.slice(0, 5) + "..." + account.accountAddress.slice(-5),
             vscode.TreeItemCollapsibleState.None,
             "undeployedAccount",
-            account
+            account,
+            "unverified"
           ));
         }
       }
@@ -64,7 +66,8 @@ export class Account extends vscode.TreeItem {
     public readonly label: string,
     public readonly collapsibleState: vscode.TreeItemCollapsibleState,
     public readonly context: string,
-    public account: JSONAccountType | undefined
+    public account: JSONAccountType | undefined,
+    public readonly icon: string
   ) {
     super(label, collapsibleState);
     this.contextValue = context;
@@ -76,8 +79,7 @@ export class Account extends vscode.TreeItem {
     arguments: [this],
   };
 
-  iconPath = (this.context === "deployedAccount" || this.context === "undeployedAccount") ? new vscode.ThemeIcon("account") : (this.context === "deployed") ? new vscode.ThemeIcon("verified") : new vscode.ThemeIcon("unverified");
-  // new vscode.ThemeIcon("account");
+  iconPath = new vscode.ThemeIcon(this.icon);
 }
 
 

@@ -1,9 +1,7 @@
 import * as vscode from "vscode";
 import { isCairo1Contract, loadAllCompiledContract } from "../../config/contract";
 
-export class ContractTreeDataProvider
-  implements vscode.TreeDataProvider<Contract>
-{
+export class ContractTreeDataProvider implements vscode.TreeDataProvider<Contract> {
   constructor(private workspaceRoot: string | undefined) { }
 
   getTreeItem(element: Contract): vscode.TreeItem {
@@ -13,13 +11,18 @@ export class ContractTreeDataProvider
   async getChildren(element?: Contract): Promise<Contract[]> {
     const contracts = loadAllCompiledContract();
 
-    if ( contracts === undefined || contracts.length === 0) {
+    if (contracts === undefined || contracts.length === 0) {
       vscode.window.showInformationMessage("No Contracts in workspace");
       return [];
     } else {
       const leaves = [];
       for (const file of contracts) {
-        leaves.push(new Contract(file.slice(0, -5), vscode.TreeItemCollapsibleState.None,"contract"));
+        leaves.push(new Contract(
+          file.slice(0, -5),
+          vscode.TreeItemCollapsibleState.None,
+          "contract",
+          isCairo1Contract(file) ? "file-code" : "file-text"
+        ));
       }
       return leaves;
     }
@@ -40,7 +43,8 @@ export class Contract extends vscode.TreeItem {
   constructor(
     public readonly label: string,
     public readonly collapsibleState: vscode.TreeItemCollapsibleState,
-    public readonly context: string
+    public readonly context: string,
+    public icon: string
   ) {
     super(label, collapsibleState);
     this.contextValue = context;
@@ -52,5 +56,6 @@ export class Contract extends vscode.TreeItem {
     arguments: [this],
   };
 
-  iconPath = new vscode.ThemeIcon("file-code");
+  iconPath = new vscode.ThemeIcon(this.icon);
 }
+

@@ -94,12 +94,11 @@ export const isCairo1Contract = (fileName: string) : boolean => {
     return false;
   }
   const path_ = vscode.workspace.workspaceFolders[0].uri.fsPath;
-  const file = fileName.substring(0, fileName.length - 5);
   const fileData = fs.readFileSync(
-    path.join(path_, "starkode", file, `${file}_abi.json`),
+    path.join(path_, fileName),
     { encoding: "utf-8" }
   );
-  return JSON.parse(fileData).contract_class_version === "0.1.0" ? true : false;
+  return JSON.parse(fileData).contract_class_version === "0.1.0"? true : false;
 };
 
 export const declareContract = async (context: vscode.ExtensionContext) => {
