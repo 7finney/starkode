@@ -91,7 +91,6 @@ export function activate(context: vscode.ExtensionContext) {
   });
 
   context.subscriptions.push(
-
     vscode.commands.registerCommand("starkode.activate", () => {
       if (!fs.existsSync(path.join(path_, "starkode"))) {
         fs.mkdirSync(path.join(path_, "starkode"));
