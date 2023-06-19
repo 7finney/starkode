@@ -78,8 +78,8 @@ export function activate(context: vscode.ExtensionContext) {
 
   const selectedNetwork: any = context.workspaceState.get("selectedNetwork");
 
-  const selectedAccount = context.workspaceState.get("account") as string;
-  accountTreeView.message = `Account : ${selectedAccount.slice(0, 5) + "..." + selectedAccount.slice(-5)} | ${selectedNetwork}`;
+  const selectedAccount: string | undefined = context.workspaceState.get("account") as string;
+  accountTreeView.message = selectedAccount ? `Account : ${selectedAccount.slice(0, 5) + "..." + selectedAccount.slice(-5)} | ${selectedNetwork}` : "Select a network and deploy an account.";
 
   // ABI Tree View
   const abiTreeDataProvider = new AbiTreeDataProvider(
