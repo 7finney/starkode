@@ -197,7 +197,7 @@
   },
   "scripts": {
     "build": "npm run compile",
-    "compile": "tsc -p ./",
+    "compile": "tsc -p ./  --skipLibCheck",
     "lint": "eslint \"src/**/*.ts\"",
     "watch": "tsc -watch -p ./"
   },

@@ -4,6 +4,7 @@ import path from "path";
 import {
   createOZAccount,
   deployAccount,
+  getNotDeployedAccounts,
   selectDeployedAccount,
   selectNotDeployedAccount,
 } from "./config/account";
@@ -14,10 +15,11 @@ import {
   executeContractFunctionFromTreeView,
   getContractInfo,
   isCairo1Contract,
+  loadAllCompiledContract,
   selectCompiledContract,
   setContract,
 } from "./config/contract";
-import { updateSelectedNetwork } from "./config/network";
+import { NETWORKS, updateSelectedNetwork } from "./config/network";
 import { logger } from "./lib";
 import { Contract, ContractTreeDataProvider } from "./treeView/ContractTreeView/ContractTreeDataProvider";
 import { editContractAddress, refreshContract } from "./treeView/ContractTreeView/function";
@@ -26,6 +28,7 @@ import { Contract as ContractTreeItem } from "./treeView/ContractTreeView/Contra
 import { AbiTreeDataProvider } from "./treeView/ABITreeView/AbiTreeDataProvider";
 import { editInput } from "./treeView/ABITreeView/functions";
 import { AccountTreeDataProvider } from "./treeView/AccountTreeView/AccountTreeDataProvider";
+import { JSONAccountType } from "./types";
 
 
 export function activate(context: vscode.ExtensionContext) {
@@ -36,12 +39,11 @@ export function activate(context: vscode.ExtensionContext) {
   }
 
   const path_ = vscode.workspace.workspaceFolders[0].uri.fsPath;
-
   const watcher = vscode.workspace.createFileSystemWatcher(`${path_}/starkode/**`);
 
   watcher.onDidChange((event: vscode.Uri) => {
     const contractName: string | undefined = context.workspaceState.get("selectedContract");
-    if (!contractName) {
+    if (contractName === undefined) {
       abiTreeView.message = "Select a contract and its ABI functions will appear here.";
     } else {
       abiTreeView.message = undefined;
@@ -59,6 +61,12 @@ export function activate(context: vscode.ExtensionContext) {
   let contractTreeView = vscode.window.createTreeView("starkode.contracts", {
     treeDataProvider: contractTreeDataProvider,
   });
+
+  // if contract tree view is empty
+  const contracts = loadAllCompiledContract();
+  if (contracts === undefined || contracts.length === 0) {
+    contractTreeView.message = "No contract found. Please compile your contract.";
+  }
 
   contractTreeView.onDidChangeSelection(event => {
     const selectedNodes = event.selection;
@@ -79,7 +87,8 @@ export function activate(context: vscode.ExtensionContext) {
   const selectedNetwork: any = context.workspaceState.get("selectedNetwork");
 
   const selectedAccount: string | undefined = context.workspaceState.get("account") as string;
-  accountTreeView.message = selectedAccount ? `Account : ${selectedAccount.slice(0, 5) + "..." + selectedAccount.slice(-5)} | ${selectedNetwork}` : "Select a network and deploy an account.";
+
+  accountTreeView.message = selectedAccount ? `Account : ${selectedAccount.slice(0, 5) + "..." + selectedAccount.slice(-5)} | ${selectedNetwork}` : "Select a deployed account , or create an account and deploy it";
 
   // ABI Tree View
   const abiTreeDataProvider = new AbiTreeDataProvider(
@@ -89,7 +98,14 @@ export function activate(context: vscode.ExtensionContext) {
   const abiTreeView = vscode.window.createTreeView("starkode.abis", {
     treeDataProvider: abiTreeDataProvider,
   });
-
+  const contractName: string | undefined = context.workspaceState.get("selectedContract");
+  if (!contractName || contractName === undefined) {
+    abiTreeView.message = "Select a contract and its ABI functions will appear here.";
+  }
+  else {
+    const contractInfo = getContractInfo(path_, contractName);
+    abiTreeView.description = `${contractName.slice(0, -5)} @ ${contractInfo.address}`;
+  }
   context.subscriptions.push(
     vscode.commands.registerCommand("starkode.activate", () => {
       if (!fs.existsSync(path.join(path_, "starkode"))) {
@@ -107,7 +123,7 @@ export function activate(context: vscode.ExtensionContext) {
       setContract(context, node.label);
       abiTreeView.message = undefined;
       const contractName: string | undefined = context.workspaceState.get("selectedContract");
-      if (!contractName) {
+      if (!contractName || contractName === undefined) {
         abiTreeView.message = "Select a contract and its ABI functions will appear here.";
       } else {
         abiTreeView.message = undefined;
@@ -172,10 +188,6 @@ export function activate(context: vscode.ExtensionContext) {
         "selectedContract"
       ) as string;
       console.log(selectedContract);
-      // node.icon = "sync~spin";
-      node.updateIcon("sync~spin");
-      node.getTreeItem(node);
-      contractTreeDataProvider.refresh();
       if (selectedContract.slice(0, -5) !== node.label) {
         logger.log("Please select the contract first.");
       } else {
@@ -192,7 +204,8 @@ export function activate(context: vscode.ExtensionContext) {
     }),
 
     vscode.commands.registerCommand("starkode.createaccount", async () => {
-      createOZAccount(context);
+      await createOZAccount(context);
+      contractTreeDataProvider.refresh();
     }),
 
     vscode.commands.registerCommand("starkode.unDeployedAccount", async () => {

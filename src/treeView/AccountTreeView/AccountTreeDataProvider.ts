@@ -18,7 +18,7 @@ export class AccountTreeDataProvider
     const undeployedAccounts: Array<JSONAccountType> | undefined = await getNotDeployedAccounts(this.context);
     console.log(accounts);
     console.log(undeployedAccounts);
-    if (accounts === undefined && undeployedAccounts === undefined) {
+    if ((accounts === undefined && undeployedAccounts === undefined)){
       return [];
     } else {
       const leaves = [];

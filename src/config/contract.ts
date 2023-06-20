@@ -35,6 +35,10 @@ const exportPathOfJSONfiles = (path_: string, file: string) => {
 };
 
 export const setContract = async (context: vscode.ExtensionContext,label:string) => {
+  if (label === undefined) {
+    // logger.log("No Contract selected.");
+    return;
+  }
   void context.workspaceState.update("selectedContract", `${label}.json`);
   logger.log(`${label} contract selected`);
   createABIFile(`${label}.json`);
@@ -209,7 +213,7 @@ export const deployContract = async (context: vscode.ExtensionContext) => {
     const { abi: testAbi } = await provider.getClassAt(
       deployResponse.contract_address
     );
-    if (testAbi === undefined) {
+    if (testAbi === undefined ) {
       throw new Error("no abi.");
     }
     const myTestContract = new Contract(

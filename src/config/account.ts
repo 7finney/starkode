@@ -173,31 +173,49 @@ export const deployAccount = async (context: vscode.ExtensionContext) => {
   logger.log(`transaction hash: ${transaction_hash}`);
   await provider.waitForTransaction(transaction_hash);
   const accounts = (await getNotDeployedAccounts(context)) as JSONAccountType[];
-  const changeToDeployed = accounts.map((account) => {
-    if (account.accountAddress === selectedAccount.accountAddress) {
-      return {
-        ...account,
-        isDeployed: {
-          gAlpha: selectedNetwork === NETWORKS[0] ? true : false,
-          gAlpha2: selectedNetwork === NETWORKS[1] ? true : false,
-          mainnet: selectedNetwork === NETWORKS[2] ? true : false,
-        },
+  updateAccountJSON( context, `${context.extensionPath}/accounts.json`, selectedAccount);
+  logger.log(`Account deployed successfully at address: ${contract_address}`);
+};
+
+const updateAccountJSON = async ( context: vscode.ExtensionContext , path: string, selectedAccount:JSONAccountType ) => {
+  const selectedNetwork = context.workspaceState.get("selectedNetwork");
+  fs.readFile(path, 'utf8', (err, data) => {
+    if (err) {
+      console.error('Error reading file:', err);
+      return;
+    }
+  
+    const accounts = JSON.parse(data);
+  
+    const indexToUpdate = accounts.findIndex((account: { accountAddress: string; }) => account.accountAddress === selectedAccount.accountAddress);
+  
+    if (indexToUpdate !== -1) {
+      accounts[indexToUpdate].isDeployed = {
+        gAlpha: selectedNetwork === NETWORKS[0] ? true : false,
+        gAlpha2: selectedNetwork === NETWORKS[1] ? true : false,
+        mainnet: selectedNetwork === NETWORKS[2] ? true : false,
       };
+  
+      fs.writeFile(path, JSON.stringify(accounts, null, 2), 'utf8', (err) => {
+        if (err) {
+          console.error('Error writing file:', err);
+          return;
+        }
+        console.log('JSON file successfully updated.');
+      });
     } else {
-      return account;
+      console.error('Element not found in JSON file.');
     }
   });
-  fs.writeFileSync(
-    `${context.extensionPath}/accounts.json`,
-    JSON.stringify(changeToDeployed)
-  );
-  logger.log(`Account deployed successfully at address: ${contract_address}`);
 };
 
 export const getDeployedAccounts = (context: vscode.ExtensionContext) => {
   const selectedNetwork: any = context.workspaceState.get("selectedNetwork");
+  if (selectedNetwork === undefined){
+    logger.log("Network not selected");
+  }
   if (!fs.existsSync(`${context.extensionPath}/accounts.json`)) {
-    logger.log("No account exist.");
+    logger.log("No deployed account exist.");
     return;
   }
   const fileData = fs.readFileSync(`${context.extensionPath}/accounts.json`, {
