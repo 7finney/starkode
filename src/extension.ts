@@ -3,6 +3,7 @@ import * as fs from "fs";
 import path from "path";
 import {
   createOZAccount,
+  deleteAccount,
   deployAccount,
   getNotDeployedAccounts,
   selectDeployedAccount,
@@ -168,6 +169,13 @@ export function activate(context: vscode.ExtensionContext) {
 
     vscode.commands.registerCommand("starkode.copyAccountAddress", async (node: any) => {
       vscode.env.clipboard.writeText(node.account.accountAddress);
+    }),
+
+    vscode.commands.registerCommand("starkode.deleteAccount", async (node: any) => {
+      console.log("deleteAccount");
+      console.log("node",node);
+      await deleteAccount(context,node);
+      accountTreeDataProvider.refresh();
     }),
 
     vscode.commands.registerCommand("starkode.editContractAddress", async (node: ContractTreeItem) => {

@@ -133,6 +133,11 @@
         "icon": "$(files)"
       },
       {
+        "command": "starkode.deleteAccount",
+        "title": "Delete Account",
+        "icon": "$(trashcan)"
+      },
+      {
         "command": "starkode.deploycontract",
         "title": "Declare contract",
         "icon": "$(play)"
@@ -189,6 +194,11 @@
         },
         {
           "command": "starkode.copyAccountAddress",
+          "when": "view == starkode.account && (viewItem == undeployedAccount || viewItem == deployedAccount)",
+          "group": "inline"
+        },
+        {
+          "command": "starkode.deleteAccount",
           "when": "view == starkode.account && (viewItem == undeployedAccount || viewItem == deployedAccount)",
           "group": "inline"
         }
