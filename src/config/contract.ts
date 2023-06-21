@@ -34,7 +34,7 @@ const exportPathOfJSONfiles = (path_: string, file: string) => {
   }
 };
 
-export const setContract = async (context: vscode.ExtensionContext,label:string) => {
+export const setContract = async (context: vscode.ExtensionContext, label: string) => {
   if (label === undefined) {
     // logger.log("No Contract selected.");
     return;
@@ -62,7 +62,7 @@ export const selectCompiledContract = (context: vscode.ExtensionContext) => {
   quickPick.onDidChangeSelection((selection: any) => {
     if (selection[0] != null) {
       const { label } = selection[0];
-      setContract(context,label);
+      setContract(context, label);
       quickPick.dispose();
     }
   });
@@ -73,26 +73,36 @@ export const selectCompiledContract = (context: vscode.ExtensionContext) => {
 };
 
 export const getContractInfo = (path_: string, fileName: string) => {
-  const file = fileName.substring(0, fileName.length - 5);
-  const fileData = fs.readFileSync(
-    path.join(path_, "starkode", file, `${file}_address.json`),
-    { encoding: "utf-8" }
-  );
-  const parsedFileData = JSON.parse(fileData);
-  return parsedFileData;
+  try {
+    const file = fileName.substring(0, fileName.length - 5);
+    const fileData = fs.readFileSync(
+      path.join(path_, "starkode", file, `${file}_address.json`),
+      { encoding: "utf-8" }
+    );
+    const parsedFileData = JSON.parse(fileData);
+    return parsedFileData;
+  } catch (error) {
+    // console.log(error);
+    return undefined;
+  }
 };
 
 export const getContractABI = (path_: string, fileName: string) => {
-  const file = fileName.substring(0, fileName.length - 5);
-  const fileData = fs.readFileSync(
-    path.join(path_, "starkode", file, `${file}_abi.json`),
-    { encoding: "utf-8" }
-  );
-  const parsedFileData = JSON.parse(fileData);
-  return parsedFileData;
+  try {
+    const file = fileName.substring(0, fileName.length - 5);
+    const fileData = fs.readFileSync(
+      path.join(path_, "starkode", file, `${file}_abi.json`),
+      { encoding: "utf-8" }
+    );
+    const parsedFileData = JSON.parse(fileData);
+    return parsedFileData;
+  } catch (error) {
+    // console.log(error);
+    return undefined;
+  }
 };
 
-export const isCairo1Contract = (fileName: string) : boolean => {
+export const isCairo1Contract = (fileName: string): boolean => {
   if (vscode.workspace.workspaceFolders === undefined) {
     logger.error("Error: Please open your solidity project to vscode");
     return false;
@@ -102,7 +112,7 @@ export const isCairo1Contract = (fileName: string) : boolean => {
     path.join(path_, fileName),
     { encoding: "utf-8" }
   );
-  return JSON.parse(fileData).contract_class_version === "0.1.0"? true : false;
+  return JSON.parse(fileData).contract_class_version === "0.1.0" ? true : false;
 };
 
 export const declareContract = async (context: vscode.ExtensionContext) => {
@@ -213,7 +223,7 @@ export const deployContract = async (context: vscode.ExtensionContext) => {
     const { abi: testAbi } = await provider.getClassAt(
       deployResponse.contract_address
     );
-    if (testAbi === undefined ) {
+    if (testAbi === undefined) {
       throw new Error("no abi.");
     }
     const myTestContract = new Contract(

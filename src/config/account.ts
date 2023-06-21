@@ -88,7 +88,7 @@ export const createOZAccount = async (context: vscode.ExtensionContext) => {
 export const getNotDeployedAccounts = async (context: vscode.ExtensionContext) => {
   const selectedNetwork: any = context.workspaceState.get("selectedNetwork");
   if (selectedNetwork === undefined) {
-    logger.log("No network selected.");
+    logger.log("Network not selected");
     return;
   }
   if (!fs.existsSync(`${context.extensionPath}/accounts.json`)) {
@@ -138,7 +138,7 @@ export const selectNotDeployedAccount = async (
   quickPick.show();
 };
 
-export const deployAccount = async (context: vscode.ExtensionContext) => {
+export const deployAccount = async (context: vscode.ExtensionContext , accountTreeDataProvider: any) => {
   const presentAccounts: Array<JSONAccountType> | undefined =
     await getNotDeployedAccounts(context);
 
@@ -172,9 +172,10 @@ export const deployAccount = async (context: vscode.ExtensionContext) => {
 
   logger.log(`transaction hash: ${transaction_hash}`);
   await provider.waitForTransaction(transaction_hash);
-  const accounts = (await getNotDeployedAccounts(context)) as JSONAccountType[];
-  updateAccountJSON( context, `${context.extensionPath}/accounts.json`, selectedAccount);
+  await updateAccountJSON( context, `${context.extensionPath}/accounts.json`, selectedAccount);
   logger.log(`Account deployed successfully at address: ${contract_address}`);
+  accountTreeDataProvider.refresh();
+
 };
 
 const updateAccountJSON = async ( context: vscode.ExtensionContext , path: string, selectedAccount:JSONAccountType ) => {
@@ -212,7 +213,8 @@ const updateAccountJSON = async ( context: vscode.ExtensionContext , path: strin
 export const getDeployedAccounts = (context: vscode.ExtensionContext) => {
   const selectedNetwork: any = context.workspaceState.get("selectedNetwork");
   if (selectedNetwork === undefined){
-    logger.log("Network not selected");
+    // logger.log("Network not selected");
+    return;
   }
   if (!fs.existsSync(`${context.extensionPath}/accounts.json`)) {
     logger.log("No deployed account exist.");

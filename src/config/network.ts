@@ -28,7 +28,9 @@ export const updateSelectedNetwork = async (
       logger.success(`Selected network is ${label}`);
       const selectedNetwork: any = context.workspaceState.get("selectedNetwork");
       const selectedAccount = context.workspaceState.get("account") as string;
-      accountTreeView.message = `Account : ${selectedAccount.slice(0, 5) + "..." + selectedAccount.slice(-5)} | ${selectedNetwork}`;
+      if (selectedAccount !== undefined) {
+        accountTreeView.message = `Account : ${selectedAccount.slice(0, 5) + "..." + selectedAccount.slice(-5)} | ${selectedNetwork}`;
+      }
       accountTreeDataProvider.refresh();
     }
   });
@@ -62,7 +64,7 @@ export const getNetworkProvider = (
     }
   }
   if (networkBaseUrl === undefined) {
-    logger.log("No network selected.");
+    // logger.log("No network selected.");
     return;
   }
 

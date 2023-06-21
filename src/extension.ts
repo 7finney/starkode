@@ -105,31 +105,37 @@ export function activate(context: vscode.ExtensionContext) {
   }
   else {
     const contractInfo = getContractInfo(path_, contractName);
-    abiTreeView.description = `${contractName.slice(0, -5)} @ ${contractInfo.address}`;
+    if (contractInfo !== undefined) {
+      abiTreeView.description = `${contractName.slice(0, -5)} @ ${contractInfo.address}`;
+    } else {
+      abiTreeView.message = "Select a contract and its ABI functions will appear here.";
+    }
   }
   context.subscriptions.push(
     vscode.commands.registerCommand("starkode.activate", () => {
-      if (!fs.existsSync(path.join(path_, "starkode"))) {
-        fs.mkdirSync(path.join(path_, "starkode"));
+      try {
+        if (!fs.existsSync(path.join(path_, "starkode"))) {
+          fs.mkdirSync(path.join(path_, "starkode"));
+        }
+        vscode.window.showInformationMessage("Starkode activated.");
+      } catch (error) {
+        console.log(error);
       }
-      vscode.window.showInformationMessage("Starkode activated.");
     }),
 
     vscode.commands.registerCommand("starkode.refreshContracts", async (node: ContractTreeItem) => {
       contractTreeView = await refreshContract(node, contractTreeDataProvider);
+      contractTreeView.message = undefined;
     }),
 
     vscode.commands.registerCommand("starkode.useContract", async (node: ContractTreeItem) => {
       console.log(node);
       setContract(context, node.label);
       abiTreeView.message = undefined;
-      const contractName: string | undefined = context.workspaceState.get("selectedContract");
-      if (!contractName || contractName === undefined) {
-        abiTreeView.message = "Select a contract and its ABI functions will appear here.";
-      } else {
-        abiTreeView.message = undefined;
-        const contractInfo = getContractInfo(path_, contractName);
-        abiTreeView.description = `${contractName.slice(0, -5)} @ ${contractInfo.address}`;
+
+      const contractInfo = getContractInfo(path_, `${node.label}.json`);
+      if (contractInfo !== undefined) {
+        abiTreeView.description = `${node.label} @ ${contractInfo.address}`;
       }
       abiTreeDataProvider.refresh();
     }),
@@ -141,7 +147,9 @@ export function activate(context: vscode.ExtensionContext) {
         logger.log(`${node.account.accountAddress} selected`);
         const selectedNetwork: any = context.workspaceState.get("selectedNetwork");
         const selectedAccount = context.workspaceState.get("account") as string;
-        accountTreeView.message = `Account : ${selectedAccount.slice(0, 5) + "..." + selectedAccount.slice(-5)} | ${selectedNetwork}`;
+        if (selectedAccount !== undefined) {
+          accountTreeView.message = `Account : ${selectedAccount.slice(0, 5) + "..." + selectedAccount.slice(-5)} | ${selectedNetwork}`;
+        }
         abiTreeDataProvider.refresh();
       } else {
         vscode.window.showErrorMessage("Please deploy the account first.");
@@ -163,8 +171,7 @@ export function activate(context: vscode.ExtensionContext) {
       console.log("deployAccountTreeView");
       void context.workspaceState.update("undeployedAccount", node.account.accountAddress);
       logger.log(`${node.account.accountAddress} selected`);
-      await deployAccount(context);
-      accountTreeDataProvider.refresh();
+      await deployAccount(context, accountTreeDataProvider);
     }),
 
     vscode.commands.registerCommand("starkode.copyAccountAddress", async (node: any) => {
@@ -173,8 +180,8 @@ export function activate(context: vscode.ExtensionContext) {
 
     vscode.commands.registerCommand("starkode.deleteAccount", async (node: any) => {
       console.log("deleteAccount");
-      console.log("node",node);
-      await deleteAccount(context,node);
+      console.log("node", node);
+      await deleteAccount(context, node);
       accountTreeDataProvider.refresh();
     }),
 
@@ -196,6 +203,10 @@ export function activate(context: vscode.ExtensionContext) {
         "selectedContract"
       ) as string;
       console.log(selectedContract);
+      if (selectedContract === undefined) {
+        logger.log("No Contract selected");
+        return;
+      }
       if (selectedContract.slice(0, -5) !== node.label) {
         logger.log("Please select the contract first.");
       } else {
@@ -212,7 +223,7 @@ export function activate(context: vscode.ExtensionContext) {
     }),
 
     vscode.commands.registerCommand("starkode.createaccount", async () => {
-      await createOZAccount(context);
+      createOZAccount(context);
       contractTreeDataProvider.refresh();
     }),
 
@@ -225,7 +236,7 @@ export function activate(context: vscode.ExtensionContext) {
     }),
 
     vscode.commands.registerCommand("starkode.deployaccount", async () => {
-      await deployAccount(context);
+      await deployAccount(context, accountTreeDataProvider);
     }),
 
     vscode.commands.registerCommand("starkode.selectaccount", async () => {

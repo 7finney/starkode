@@ -14,7 +14,7 @@ export const createABIFile = (file: string) => {
     const fileName = file.substring(0, file.length - 5);
 
     if (!fs.existsSync(path.join(path_, "starkode", fileName))) {
-      fs.mkdirSync(path.join(path_, "starkode", fileName));
+      fs.mkdirSync(path.join(path_, "starkode", fileName),{recursive: true});
     }
 
     if (
