@@ -6,7 +6,7 @@
   "publisher": "7finney",
   "repository": "https://github.com/7finney/starkode.git",
   "license": "MIT",
-  "icon": "media/image.png",
+  "icon": "media/logo.png",
   "engines": {
     "vscode": "^1.74.0"
   },
@@ -26,7 +26,7 @@
         {
           "id": "starkode-container",
           "title": "Starkode",
-          "icon": "media/image.png"
+          "icon": "media/line-logo.png"
         }
       ]
     },

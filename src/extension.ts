@@ -5,7 +5,6 @@ import {
   createOZAccount,
   deleteAccount,
   deployAccount,
-  getNotDeployedAccounts,
   selectDeployedAccount,
   selectNotDeployedAccount,
 } from "./config/account";
@@ -20,16 +19,15 @@ import {
   selectCompiledContract,
   setContract,
 } from "./config/contract";
-import { NETWORKS, updateSelectedNetwork } from "./config/network";
+import { updateSelectedNetwork } from "./config/network";
 import { logger } from "./lib";
-import { Contract, ContractTreeDataProvider } from "./treeView/ContractTreeView/ContractTreeDataProvider";
+import { ContractTreeDataProvider } from "./treeView/ContractTreeView/ContractTreeDataProvider";
 import { editContractAddress, refreshContract } from "./treeView/ContractTreeView/function";
 
 import { Contract as ContractTreeItem } from "./treeView/ContractTreeView/ContractTreeDataProvider";
 import { AbiTreeDataProvider } from "./treeView/ABITreeView/AbiTreeDataProvider";
 import { editInput } from "./treeView/ABITreeView/functions";
 import { AccountTreeDataProvider } from "./treeView/AccountTreeView/AccountTreeDataProvider";
-import { JSONAccountType } from "./types";
 
 
 export function activate(context: vscode.ExtensionContext) {

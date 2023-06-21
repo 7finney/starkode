@@ -4,3 +4,4 @@ node_modules
 .vscode-test/
 *.vsix
 accounts.json
+.DS_Store
