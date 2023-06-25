@@ -2,7 +2,7 @@
   "name": "starkode",
   "displayName": "Starkode",
   "description": "Extension for execution of contracts written in cairo.",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "publisher": "7finney",
   "repository": "https://github.com/7finney/starkode.git",
   "license": "MIT",
