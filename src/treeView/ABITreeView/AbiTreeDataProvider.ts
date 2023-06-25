@@ -23,7 +23,6 @@ export class AbiTreeDataProvider implements TreeDataProvider<Abi> {
     }
     const path_ = vscode.workspace.workspaceFolders[0].uri.fsPath;
     const selectedContract: string | undefined = this.context.workspaceState.get("selectedContract") as string;
-    console.log(selectedContract);
     const data = getContractABI(path_,selectedContract);
     const inputFunction: Array<ABIFragment> | undefined = selectedContract !== undefined ? data === undefined ? undefined : data.abi :
       [];
@@ -31,7 +30,6 @@ export class AbiTreeDataProvider implements TreeDataProvider<Abi> {
       return undefined;
     } 
     else {
-      console.log(inputFunction);
       if (!element) {
         for (const entry of inputFunction) {
           if (entry.type === "function") {

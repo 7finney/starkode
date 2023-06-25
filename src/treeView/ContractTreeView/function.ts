@@ -9,7 +9,7 @@ export const refreshContract = async (node: ContractTreeItem, contractTreeDataPr
 
 export const editContractAddress = async (input : any,context: vscode.ExtensionContext) => {
     if (vscode.workspace.workspaceFolders === undefined) {
-        logger.error("Error: Please open your solidity project to vscode");
+        logger.error("Error: Open or Create a cairo project.");
         return;
     }
     const path_ = vscode.workspace.workspaceFolders[0].uri.fsPath;

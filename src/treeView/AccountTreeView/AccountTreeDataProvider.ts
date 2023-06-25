@@ -16,13 +16,10 @@ export class AccountTreeDataProvider
   async getChildren(element?: Account): Promise<Account[]> {
     const accounts: Array<JSONAccountType> | undefined = getDeployedAccounts(this.context);
     const undeployedAccounts: Array<JSONAccountType> | undefined = await getNotDeployedAccounts(this.context);
-    console.log(accounts);
-    console.log(undeployedAccounts);
     if ((accounts === undefined && undeployedAccounts === undefined)){
       return [];
     } else {
       const leaves = [];
-      // leaves.push(new Account("Deployed Accounts", vscode.TreeItemCollapsibleState.None, "deployed", undefined));
       if (accounts !== undefined) {
         for (const account of accounts) {
           leaves.push(new Account(
@@ -34,7 +31,6 @@ export class AccountTreeDataProvider
           ));
         }
       }
-      // leaves.push(new Account("Undeployed Accounts", vscode.TreeItemCollapsibleState.None, "undeployed", undefined));
       if (undeployedAccounts !== undefined) {
         for (const account of undeployedAccounts) {
           leaves.push(new Account(
