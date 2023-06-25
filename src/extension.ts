@@ -127,7 +127,6 @@ export function activate(context: vscode.ExtensionContext) {
     }),
 
     vscode.commands.registerCommand("starkode.useContract", async (node: ContractTreeItem) => {
-      console.log(node);
       setContract(context, node.label);
       abiTreeView.message = undefined;
 
@@ -155,18 +154,15 @@ export function activate(context: vscode.ExtensionContext) {
     }),
 
     vscode.commands.registerCommand("starkode.createAccountTreeView", async () => {
-      console.log("createAccountTreeView");
       createOZAccount(context);
       accountTreeDataProvider.refresh();
     }),
 
     vscode.commands.registerCommand("starkode.selectNetwork", async () => {
-      console.log("selectNetwork");
       await updateSelectedNetwork(context, accountTreeView, accountTreeDataProvider);
     }),
 
     vscode.commands.registerCommand("starkode.deployAccountTreeView", async (node: any) => {
-      console.log("deployAccountTreeView");
       void context.workspaceState.update("undeployedAccount", node.account.accountAddress);
       logger.log(`${node.account.accountAddress} selected`);
       await deployAccount(context, accountTreeDataProvider);
@@ -177,8 +173,6 @@ export function activate(context: vscode.ExtensionContext) {
     }),
 
     vscode.commands.registerCommand("starkode.deleteAccount", async (node: any) => {
-      console.log("deleteAccount");
-      console.log("node", node);
       await deleteAccount(context, node);
       accountTreeDataProvider.refresh();
     }),
@@ -195,12 +189,9 @@ export function activate(context: vscode.ExtensionContext) {
     }),
 
     vscode.commands.registerCommand("starkode.deploycontract", async (node: any) => {
-      console.log("deploycontract");
-      console.log(node);
       const selectedContract: string = context.workspaceState.get(
         "selectedContract"
       ) as string;
-      console.log(selectedContract);
       if (selectedContract === undefined) {
         logger.log("No Contract selected");
         return;
@@ -254,7 +245,6 @@ export function activate(context: vscode.ExtensionContext) {
     }),
 
     vscode.commands.registerCommand("starkode.callContract", async (node: any) => {
-      console.log("Call", node.abi);
       await executeContractFunctionFromTreeView(context, node.abi);
     })
 

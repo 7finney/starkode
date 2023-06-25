@@ -79,7 +79,7 @@ export const createOZAccount = async (context: vscode.ExtensionContext) => {
         JSON.stringify(writeNewAccount)
       );
     }
-    logger.log(`created new account ${OZcontractAddress}`);
+    logger.log(`New account created: ${OZcontractAddress}`);
   } catch (error) {
     logger.error(`Error while creating new account: ${error}`);
   }
@@ -162,7 +162,7 @@ export const deployAccount = async (context: vscode.ExtensionContext , accountTr
     "1"
   );
   logger.log(
-    `deploying account ${selectedAccount.accountAddress} on ${selectedNetwork}`
+    `Deploying account ${selectedAccount.accountAddress} on ${selectedNetwork}`
   );
   const { contract_address, transaction_hash } = await account.deployAccount({
     classHash: selectedAccount.accountHash,
@@ -170,7 +170,7 @@ export const deployAccount = async (context: vscode.ExtensionContext , accountTr
     addressSalt: selectedAccount.accountPubKey,
   });
 
-  logger.log(`transaction hash: ${transaction_hash}`);
+  logger.log(`Transaction hash: ${transaction_hash}`);
   await provider.waitForTransaction(transaction_hash);
   await updateAccountJSON( context, `${context.extensionPath}/accounts.json`, selectedAccount);
   logger.log(`Account deployed successfully at address: ${contract_address}`);
