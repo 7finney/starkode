@@ -5,6 +5,8 @@
   "version": "0.0.2",
   "publisher": "7finney",
   "repository": "https://github.com/7finney/starkode.git",
+  "license": "MIT",
+  "icon": "media/starkode-logo.png",
   "engines": {
     "vscode": "^1.74.0"
   },
@@ -16,11 +18,44 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
+    "configuration": {
+      "title": "Starkode"
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "starkode-container",
+          "title": "Starkode",
+          "icon": "media/starkode-line-logo.png"
+        }
+      ]
+    },
+    "views": {
+      "starkode-container": [
+        {
+          "id": "starkode.account",
+          "name": "ACCOUNT"
+        },
+        {
+          "id": "starkode.contracts",
+          "name": "Contracts"
+        },
+        {
+          "id": "starkode.abis",
+          "name": "ABI"
+        }
+      ]
+    },
     "commands": [
       {
         "command": "starkode.activate",
         "title": "Activate starkode extension",
         "category": "Starkode"
+      },
+      {
+        "command": "starkode.editInput",
+        "title": "Edit input value",
+        "icon": "$(edit)"
       },
       {
         "command": "starkode.selectnetwork",
@@ -66,12 +101,113 @@
         "command": "starkode.callFunction",
         "title": "Call contact method",
         "category": "Starkode"
+      },
+      {
+        "command": "starkode.callContract",
+        "title": "Call contract method",
+        "icon": "$(play)"
+      },
+      {
+        "command": "starkode.refreshContracts",
+        "title": "Refresh",
+        "icon": "$(extensions-refresh)"
+      },
+      {
+        "command": "starkode.selectNetwork",
+        "title": "Select Network",
+        "icon": "$(plug)"
+      },
+      {
+        "command": "starkode.createAccountTreeView",
+        "title": "Create Account",
+        "icon": "$(plus)"
+      },
+      {
+        "command": "starkode.deployAccountTreeView",
+        "title": "Deploy Account",
+        "icon": "$(play)"
+      },
+      {
+        "command": "starkode.copyAccountAddress",
+        "title": "Copy Account Address",
+        "icon": "$(files)"
+      },
+      {
+        "command": "starkode.deleteAccount",
+        "title": "Delete Account",
+        "icon": "$(trashcan)"
+      },
+      {
+        "command": "starkode.deploycontract",
+        "title": "Declare contract",
+        "icon": "$(play)"
+      },
+      {
+        "command": "starkode.editContractAddress",
+        "title": "Add / edit Constract Address",
+        "icon": "$(edit)"
       }
-    ]
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "starkode.refreshContracts",
+          "when": "view == starkode.contracts",
+          "group": "navigation"
+        },
+        {
+          "command": "starkode.createAccountTreeView",
+          "when": "view == starkode.account",
+          "group": "navigation"
+        },
+        {
+          "command": "starkode.selectNetwork",
+          "when": "view == starkode.account",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "starkode.editContractAddress",
+          "when": "view == starkode.contracts && viewItem == contract",
+          "group": "inline"
+        },
+        {
+          "command": "starkode.deploycontract",
+          "when": "view == starkode.contracts && viewItem == contract",
+          "group": "inline"
+        },
+        {
+          "command": "starkode.editInput",
+          "when": "view == starkode.abis && viewItem == abiInput",
+          "group": "inline"
+        },
+        {
+          "command": "starkode.callContract",
+          "when": "view == starkode.abis && viewItem == abiReadFunction || viewItem == abiFunction",
+          "group": "inline"
+        },
+        {
+          "command": "starkode.deployAccountTreeView",
+          "when": "view == starkode.account && viewItem == undeployedAccount",
+          "group": "inline"
+        },
+        {
+          "command": "starkode.copyAccountAddress",
+          "when": "view == starkode.account && (viewItem == undeployedAccount || viewItem == deployedAccount)",
+          "group": "inline"
+        },
+        {
+          "command": "starkode.deleteAccount",
+          "when": "view == starkode.account && (viewItem == undeployedAccount || viewItem == deployedAccount)",
+          "group": "inline"
+        }
+      ]
+    }
   },
   "scripts": {
     "build": "npm run compile",
-    "compile": "tsc -p ./",
+    "compile": "tsc -p ./  --skipLibCheck",
     "lint": "eslint \"src/**/*.ts\"",
     "watch": "tsc -watch -p ./"
   },

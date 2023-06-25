@@ -14,7 +14,7 @@ export const createABIFile = (file: string) => {
     const fileName = file.substring(0, file.length - 5);
 
     if (!fs.existsSync(path.join(path_, "starkode", fileName))) {
-      fs.mkdirSync(path.join(path_, "starkode", fileName));
+      fs.mkdirSync(path.join(path_, "starkode", fileName),{recursive: true});
     }
 
     if (
@@ -48,7 +48,7 @@ export const createABIFile = (file: string) => {
 
       fs.writeFileSync(
         path.join(path_, "starkode", fileName, `${fileName}_abi.json`),
-        JSON.stringify({ isCairo1: isCairo1Contract, abi: functionsValue })
+        JSON.stringify({ isCairo1: isCairo1Contract, abi: functionsValue }, null, 2)
       );
       logger.log("ABI file created successfully.");
     } else {
@@ -79,7 +79,7 @@ export const createAddressFile = (file: string) => {
           name: fileName,
           address: "",
           classHash: "",
-        })
+        }, null, 2)
       );
       logger.log("Address file created successfully.");
     } else {
